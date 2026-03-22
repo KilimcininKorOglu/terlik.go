@@ -305,7 +305,7 @@ func (d *detector) detectPattern(text string, whitelist map[string]bool, results
 
 	// Pass 1: locale-lowered text
 	lowerText := localeLowerCase(text, d.locale)
-	isNorm := lowerText != text
+	isNorm := lowerText != text && len(lowerText) == len(text)
 	d.runPatterns(lowerText, text, whitelist, results, isNorm, options)
 
 	// Pass 2: fully normalized text
