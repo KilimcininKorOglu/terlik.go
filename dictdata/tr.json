@@ -1,0 +1,1196 @@
+{
+  "version": 1,
+  "suffixes": [
+    "tir", "dir",
+    "il",
+    "in",
+    "ik", "uk", "en", "ici",
+    "di", "ti", "dim", "tim", "din", "dik", "tik", "mis", "mus",
+    "iyor", "uyor",
+    "ecek", "acak", "ecem", "acam", "icem",
+    "er", "ir", "ar",
+    "eyim", "ayim", "elim", "alim",
+    "se", "sa",
+    "im", "um", "sin", "sun", "yim",
+    "mek", "mak",
+    "me", "ma", "is", "us",
+    "ler", "lar",
+    "si",
+    "e", "a", "de", "da", "den", "dan", "te", "ta", "ten", "tan", "i",
+    "lik", "luk", "li", "lu", "ci", "cu", "ce", "ca",
+    "le", "la",
+    "ken", "esi",
+    "un", "lari", "leri", "larin", "lerin",
+    "misin", "misiniz", "musun", "musunuz", "miyim", "miyiz",
+    "cesine", "casina",
+    "ım", "üm", "ın", "ün", "ü",
+    "ımı", "ümü", "ını", "ünü",
+    "ıma", "üme", "ına", "üne",
+    "ımız", "ümüz", "ınız", "ünüz",
+    "ımıza", "ümüze", "ınıza", "ünüze",
+    "ımızı", "ümüzü", "ınızı", "ünüzü",
+    "iniz", "imiz", "unuz", "ümüz"
+  ],
+  "entries": [
+    {
+      "root": "sik",
+      "variants": [
+        "siktir",
+        "sikimsonik",
+        "siktiğimin", "siktirmişcesine",
+        "sktr",
+        "sikişse", "sikişecek", "sikişen", "sikişme", "sikişmek",
+        "sikeceğim",
+        "sikilecek",
+        "siktiğim", "siktimin"
+      ],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": true
+    },
+    {
+      "root": "amk",
+      "variants": [
+        "amk", "amina", "aminakoyim", "aminakoydugum", "amq",
+        "aminakoyayim", "aminakoydum", "aminakoydugumun", "aq",
+        "ananısikeyim", "ananıskim", "ananıavradını", "amınakodumun",
+        "mk", "ananı", "mq", "amg",
+        "amınakorum", "amınagoyim"
+      ],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "orospu",
+      "variants": [
+        "orospucocugu", "orosbucocugu", "orspu", "oruspu", "orosbu",
+        "orospucocuklari",
+        "orospuevladı", "orospuluk"
+      ],
+      "severity": "high",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "piç",
+      "variants": ["pic", "piclik", "piçkurusu", "pç"],
+      "severity": "high",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "yarrak",
+      "variants": [
+        "yarak", "yarrak", "yarakli", "dalyarak", "dalyarrak",
+        "yarrani", "yarragimi", "yarragini",
+        "yarram", "yrrk", "yrk", "yarrakkafalı", "yarrağımıye", "yarramıye",
+        "yarrağ", "yarağ"
+      ],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": true
+    },
+    {
+      "root": "göt",
+      "variants": [
+        "got", "gotunu", "gotlek", "gotveren", "gotverenler",
+        "gote", "gotu", "gotler", "gotlu", "gotunden", "gotune",
+        "gotos",
+        "götüyemiş", "götünesokayım", "gt", "gtvsn", "götverici"
+      ],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": true
+    },
+    {
+      "root": "am",
+      "variants": ["amcik", "amcuk", "amı", "ami"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": true
+    },
+    {
+      "root": "taşak",
+      "variants": ["tasak", "tassak", "tassakli", "taşağımıye", "daltaşak", "taşağ", "tasag"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": true
+    },
+    {
+      "root": "meme",
+      "variants": [],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "ibne",
+      "variants": ["ibneler", "ibnelik"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": true
+    },
+    {
+      "root": "gavat",
+      "variants": ["gavatlik"],
+      "severity": "high",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "pezevenk",
+      "variants": ["pezo"],
+      "severity": "high",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "bok",
+      "variants": [
+        "boktan", "boka", "boku", "boklu", "boklar", "boklari"
+      ],
+      "severity": "medium",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "haysiyetsiz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "salak",
+      "variants": ["salaklik"],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "aptal",
+      "variants": ["aptallik", "aptalca"],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "gerizekalı",
+      "variants": ["gerizekali"],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "mal",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "dangalak",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "ezik",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "puşt",
+      "variants": ["pust", "pustt"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": true
+    },
+    {
+      "root": "şerefsiz",
+      "variants": ["serefsiz", "serefsizler"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "yavşak",
+      "variants": ["yavsak"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "döl",
+      "variants": ["dol", "dolunu", "dolcu"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "kahpe",
+      "variants": ["kahpelik"],
+      "severity": "high",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "sürtük",
+      "variants": ["surtuk"],
+      "severity": "high",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "kaltak",
+      "variants": [],
+      "severity": "high",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "fahişe",
+      "variants": ["fahise"],
+      "severity": "high",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "kevaşe",
+      "variants": ["kevase"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "oğlancı",
+      "variants": ["oglanci"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": true
+    },
+    {
+      "root": "dingil",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "avanak",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "manyak",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "hödük",
+      "variants": ["hoduk"],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "kepaze",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "rezil",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "kalleş",
+      "variants": ["kalles"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "namussuz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "ahlaksız",
+      "variants": ["ahlaksiz"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "hassiktir",
+      "variants": ["hsktir", "siktirtme"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "sktrgt",
+      "variants": [],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+
+    {
+      "root": "kerhane",
+      "variants": [],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": true
+    },
+    {
+      "root": "fuhuş",
+      "variants": [],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "aşifte",
+      "variants": [],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": true
+    },
+    {
+      "root": "kaşar",
+      "variants": [],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": true
+    },
+    {
+      "root": "kancık",
+      "variants": [],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": true
+    },
+    {
+      "root": "sakso",
+      "variants": ["saksocu", "saksoci"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": true
+    },
+
+    {
+      "root": "alçak",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "aşağılık",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "arsız",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "edepsiz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "hayasız",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "karaktersiz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "onursuz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "utanmaz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "terbiyesiz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "kansız",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "soysuz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "beyinsiz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "densiz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "pislik",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "yüzkarası",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "küstah",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "yüzsüz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "görgüsüz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "ukala",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "ikiyüzlü",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "müptezel",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "nankör",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "vefasız",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+
+    {
+      "root": "budala",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "ahmak",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "sersem",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "şapşal",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "andaval",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "kafasız",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "akılsız",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "kalınkafalı",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "kıtakıllı",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "yarımakıllı",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "zukkafa",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "hımbıl",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "enayi",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "denyo",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "dangoz",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "dallama",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "embesil",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "alık",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "gerzek",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "mankafa",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "saloz",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": true
+    },
+
+    {
+      "root": "çomar",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "maganda",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "yobaz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "magat",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "zugar",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "zonta",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "serseri",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "baldırıçıplak",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "yıkık",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "tokmakçı",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "hergele",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "dürzü",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "kıro",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+
+    {
+      "root": "dolandırıcı",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "sahtekar",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "fırıldak",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "madrabaz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "kalpazan",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "şarlatan",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "üçkağıtçı",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "dümenci",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "dalkavuk",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "yalaka",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+
+    {
+      "root": "geber",
+      "variants": ["gebertir", "geberticam", "gebertilesi", "geberesiyi"],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "boğazınıkeserim",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "canınıalırım",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "mezarınıkazarım",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "kafanıkırarım",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "öldürücem",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "allahbelanıversin",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "defol",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "kaybol",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "çüş",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "asılası",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "kesilesi",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "yakılası",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "gömülesi",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "gömerler",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "cehenneme",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "hapiyedin",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "belanıbulurum",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "ensenibulurum",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+
+    {
+      "root": "sg",
+      "variants": [],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "oç",
+      "variants": [],
+      "severity": "high",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "glk",
+      "variants": [],
+      "severity": "high",
+      "category": "general",
+      "suffixable": false
+    },
+
+    {
+      "root": "eşoğlueşek",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "amcı",
+      "variants": [],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "tabanvansen",
+      "variants": [],
+      "severity": "medium",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "beyinamip",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "ağzıbozuk",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "kötüniyetli",
+      "variants": [],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": false
+    },
+
+    {
+      "root": "domuz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "hınzır",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "öküz",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "eşek",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "maymun",
+      "variants": [],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    }
+  ],
+  "whitelist": [
+    "amsterdam",
+    "amateur",
+    "amatör",
+    "sikke",
+    "sikkeler",
+    "masikler",
+    "sikilasma",
+    "ambalaj",
+    "ambassador",
+    "ambulans",
+    "amel",
+    "ameliyat",
+    "amerika",
+    "amele",
+    "amino",
+    "amonyak",
+    "amper",
+    "ampul",
+    "amazon",
+    "ambargo",
+    "amblem",
+    "amfibi",
+    "boksör",
+    "bokser",
+    "bokluk",
+    "malzeme",
+    "maliyet",
+    "malik",
+    "malikane",
+    "maliye",
+    "mallorca",
+    "malta",
+    "malt",
+    "malum",
+    "gotan",
+    "gotik",
+    "gotham",
+    "memento",
+    "memleket",
+    "memur",
+    "memorial",
+    "piknik",
+    "pikachu",
+    "tasselled",
+    "siklet",
+    "kasim",
+    "kasım",
+    "yarasa",
+    "dolunay",
+    "dolum",
+    "doluluk",
+    "dolap",
+    "dolar",
+    "dolma",
+    "dolmus",
+    "ama",
+    "amen",
+    "amir",
+    "amil",
+    "dolmen",
+    "namus",
+    "namuslu",
+    "ahlak",
+    "ahlaki",
+    "sıkıcı",
+    "sıkerler",
+    "sıkıştı",
+    "sıkışık",
+    "sıkışma",
+    "sıkışmak",
+    "sıkışan",
+    "sıkışıyor",
+    "sıkıştır",
+    "sıkıştırma",
+    "sıkışmış",
+    "sıkıntı", "sıkıntılı", "sıkıntısız",
+    "sıkma", "sıkmak", "sıkılmak",
+    "sıkı", "sıkıyönetim", "sıkılaşma",
+    "sikkeleri",
+    "domuzderisi",
+    "domuzeti",
+    "öküzgözü",
+    "eşekarısı",
+    "maymuncuk",
+    "kaşarpeyniri",
+    "kancıkköpek",
+    "densizlik",
+    "pislikçi",
+    "sersemletici"
+  ]
+}

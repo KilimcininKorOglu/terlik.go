@@ -1,0 +1,1080 @@
+{
+  "version": 1,
+  "suffixes": ["ing", "ed", "er", "ers", "s", "es", "ly", "ness", "ery", "ish", "able", "dom", "less", "head", "face", "hole", "tard", "wad", "stain", "lord", "bag", "monger", "y", "est", "ass", "en", "job", "boy"],
+  "entries": [
+    {
+      "root": "fuck",
+      "variants": ["fucking", "fucker", "fucked", "fuckers", "fucks", "fck", "fuk", "fuking", "fcking", "stfu", "motherfucker", "motherfucking", "fuckface", "fuckwit", "clusterfuck", "mindfuck", "fuckboy", "fucktard", "fuckhead", "wtf", "mofo", "unfucking", "fuckery", "fuckyou", "fuckoff", "fuckwad", "fuckup", "fuckall"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": true
+    },
+    {
+      "root": "shit",
+      "variants": ["shitty", "bullshit", "shitting", "sht", "shits", "shite", "shithead", "shitstorm", "dipshit", "horseshit", "batshit", "apeshit", "shithole", "shitface", "shitshow", "shitbag", "shitload", "shithouse", "shitlist", "shitfaced", "shitlord", "shitstain", "shitbrain", "shitpost", "shitposting"],
+      "severity": "high",
+      "category": "general",
+      "suffixable": true
+    },
+    {
+      "root": "ass",
+      "variants": ["asses", "arse", "arses", "asshat", "asswipe", "smartass", "dumbass", "fatass", "badass", "jackass", "lardass", "kickass", "asscrack", "assclown", "assmunch"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "asshole",
+      "variants": ["assholes", "arsehole", "arseholes"],
+      "severity": "high",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "bitch",
+      "variants": ["bitches", "bitchy", "biatch", "bitching", "bitchass", "sonofabitch", "bitchslap"],
+      "severity": "high",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "bastard",
+      "variants": ["bastards", "bastardy"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "dick",
+      "variants": ["dickhead", "dickheads", "dicks", "dickwad", "dickweed", "dickweasel"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "cock",
+      "variants": ["cocks", "cocksucker", "cocksucking", "cockhead", "cockblock", "cockwomble", "cockring"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "cunt",
+      "variants": ["cunts", "cunty", "thundercunt"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": true
+    },
+    {
+      "root": "whore",
+      "variants": ["whores", "whorish", "whorebag", "camwhore", "manwhore"],
+      "severity": "high",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "slut",
+      "variants": ["sluts", "slutty", "slutbag", "camslut"],
+      "severity": "high",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "piss",
+      "variants": ["pissed", "pissing", "pisser", "pissoff", "pisshead"],
+      "severity": "medium",
+      "category": "general",
+      "suffixable": true
+    },
+    {
+      "root": "wank",
+      "variants": ["wanker", "wankers", "wanking"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": true
+    },
+    {
+      "root": "twat",
+      "variants": ["twats", "twatwaffle"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": true
+    },
+    {
+      "root": "bollocks",
+      "variants": ["bollock", "bollocked"],
+      "severity": "medium",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "crap",
+      "variants": ["crappy", "craps"],
+      "severity": "low",
+      "category": "general",
+      "suffixable": true
+    },
+    {
+      "root": "damn",
+      "variants": ["damned", "damnit", "dammit", "goddamn", "goddamnit"],
+      "severity": "low",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "retard",
+      "variants": ["retards", "retarded", "retardation"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "nigger",
+      "variants": ["niggers", "nigga", "niggas", "nigg3r", "nig"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "faggot",
+      "variants": ["faggots", "fag", "fags", "faggy"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "douche",
+      "variants": ["douchebag", "douchebags", "douchy", "douchey"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "tosser",
+      "variants": ["tossers"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "wanker",
+      "variants": ["wankers"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "spic",
+      "variants": ["spick", "spics", "spicks"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "kike",
+      "variants": ["kikes"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "chink",
+      "variants": ["chinks", "chinky"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "gook",
+      "variants": ["gooks"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "tranny",
+      "variants": ["trannies", "trannie"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "dyke",
+      "variants": ["dykes", "bulldyke", "bulldykes"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "coon",
+      "variants": ["coons"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "wetback",
+      "variants": ["wetbacks"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "bellend",
+      "variants": ["bellends"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "skank",
+      "variants": ["skanks", "skanky"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "scumbag",
+      "variants": ["scumbags"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "turd",
+      "variants": ["turds"],
+      "severity": "low",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "bugger",
+      "variants": ["buggered", "buggering", "buggers", "buggery"],
+      "severity": "medium",
+      "category": "general",
+      "suffixable": true
+    },
+    {
+      "root": "hell",
+      "variants": ["hells"],
+      "severity": "low",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "prick",
+      "variants": ["pricks", "pricked", "pricking"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "screw",
+      "variants": ["screwed", "screwing", "screws"],
+      "severity": "low",
+      "category": "general",
+      "suffixable": false
+    },
+    {
+      "root": "porn",
+      "variants": ["porno", "pornos", "pornographic", "pornography", "pornstar"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "blowjob",
+      "variants": ["blowjobs"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "jizz",
+      "variants": ["jizzed", "jizzing"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "dildo",
+      "variants": ["dildos", "dildoes"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "orgasm",
+      "variants": ["orgasms", "orgasmic"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "orgy",
+      "variants": ["orgies"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "hooker",
+      "variants": ["hookers"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "negro",
+      "variants": ["negroes", "negros"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "masturbate",
+      "variants": ["masturbating", "masturbation", "masturbates"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "semen",
+      "variants": [],
+      "severity": "low",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "pussy",
+      "variants": ["pussies"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "cum",
+      "variants": ["cumming", "cummed", "cumshot", "cumshots", "cumguzzler", "cumdumpster", "cumslut", "cumrag"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "penis",
+      "variants": ["penises"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "tit",
+      "variants": ["tits", "titty", "titties", "tittie", "titjob"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "vagina",
+      "variants": ["vaginas", "vaginal"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "anal",
+      "variants": [],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "rape",
+      "variants": ["raped", "raping", "rapes", "rapist", "rapists"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "beaner",
+      "variants": ["beaners"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "dago",
+      "variants": ["dagos"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "darkie",
+      "variants": ["darkies", "darky"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "honky",
+      "variants": ["honkey", "honkeys", "honkies"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "jigaboo",
+      "variants": ["jiggaboo", "jiggerboo"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "paki",
+      "variants": ["pakis"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "raghead",
+      "variants": ["ragheads"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "slanteye",
+      "variants": ["slanteyes"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "towelhead",
+      "variants": ["towelheads"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "wog",
+      "variants": ["wogs"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "wop",
+      "variants": ["wops"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "redskin",
+      "variants": ["redskins"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "halfbreed",
+      "variants": ["halfbreeds"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "homo",
+      "variants": ["homos"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": true
+    },
+    {
+      "root": "lesbo",
+      "variants": ["lesbos", "lezbo", "lezzo"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "poof",
+      "variants": ["poofter", "pooftah", "poofs"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "fudgepacker",
+      "variants": ["fudgepackers"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "butthole",
+      "variants": ["buttholes", "buttcheek", "buttcheeks", "buttplug", "buttcrack", "buttface", "buttwipe", "buttmunch"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "clit",
+      "variants": ["clitoris", "clits"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "ejaculate",
+      "variants": ["ejaculation", "ejaculating"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "fellatio",
+      "variants": [],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "fisting",
+      "variants": ["fisted"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "gangbang",
+      "variants": ["gangbangs", "gangbanged", "gangbanging"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "handjob",
+      "variants": ["handjobs"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "hentai",
+      "variants": [],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "incest",
+      "variants": ["incestuous"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "milf",
+      "variants": ["milfs"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "rimjob",
+      "variants": ["rimjobs", "rimming"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "schlong",
+      "variants": ["schlongs"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "sodomy",
+      "variants": ["sodomize", "sodomise", "sodomized", "sodomised"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "queef",
+      "variants": ["queefs", "queefing"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "nympho",
+      "variants": ["nymphos", "nymphomaniac"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "spunk",
+      "variants": [],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "creampie",
+      "variants": ["creampies"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "deepthroat",
+      "variants": ["deepthroats", "deepthroated", "deepthroating"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "shag",
+      "variants": ["shagging", "shagged", "shagger"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "anus",
+      "variants": ["anuses"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "bimbo",
+      "variants": ["bimbos"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "cuck",
+      "variants": ["cuckold", "cuckolds", "cucked", "cucking"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "moron",
+      "variants": ["morons", "moronic"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "slag",
+      "variants": ["slags", "slagged", "slagging"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "thot",
+      "variants": ["thots"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "minger",
+      "variants": ["mingers", "minging"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "plonker",
+      "variants": ["plonkers"],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "numpty",
+      "variants": ["numpties"],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "pillock",
+      "variants": ["pillocks"],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "knob",
+      "variants": ["knobhead", "knobend", "knobs"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": true
+    },
+    {
+      "root": "nonce",
+      "variants": ["nonces"],
+      "severity": "high",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "pedo",
+      "variants": ["pedophile", "paedophile", "pedos", "pedophiles"],
+      "severity": "high",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "pervert",
+      "variants": ["perv", "perverts", "perverted", "pervy", "pervs"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "spastic",
+      "variants": ["spaz", "spazz", "spazzy", "spastics"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "incel",
+      "variants": ["incels"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "fap",
+      "variants": ["fapping", "fapped"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "jerkoff",
+      "variants": ["jackoff"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "circlejerk",
+      "variants": ["circlejerks"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "chingchong",
+      "variants": [],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "injun",
+      "variants": ["injuns"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "polack",
+      "variants": ["polak", "polacks"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "bestiality",
+      "variants": [],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "blumpkin",
+      "variants": ["blumpkins"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "bukkake",
+      "variants": [],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "bunghole",
+      "variants": ["bungholes"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "carpetmuncher",
+      "variants": ["carpetmunchers"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "cornhole",
+      "variants": ["cornholed", "cornholing"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "cunnilingus",
+      "variants": [],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "doggystyle",
+      "variants": ["doggiestyle"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "felch",
+      "variants": ["feltch", "felching"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "fingerbang",
+      "variants": ["fingerbanging", "fingerbanged"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "footjob",
+      "variants": ["footjobs"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "muffdiving",
+      "variants": ["muffdiver"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "poon",
+      "variants": ["poontang", "poonani", "punany"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "quim",
+      "variants": ["quims"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "scissoring",
+      "variants": [],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "shemale",
+      "variants": ["shemales"],
+      "severity": "high",
+      "category": "slur",
+      "suffixable": false
+    },
+    {
+      "root": "splooge",
+      "variants": ["spooge", "splooging"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "strapon",
+      "variants": ["strapons"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "upskirt",
+      "variants": ["upskirts"],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "threesome",
+      "variants": ["threesomes"],
+      "severity": "medium",
+      "category": "sexual",
+      "suffixable": false
+    },
+    {
+      "root": "dingleberry",
+      "variants": ["dingleberries"],
+      "severity": "low",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "nutsack",
+      "variants": ["nutsacks"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "schmuck",
+      "variants": ["schmucks"],
+      "severity": "medium",
+      "category": "insult",
+      "suffixable": false
+    },
+    {
+      "root": "jailbait",
+      "variants": [],
+      "severity": "high",
+      "category": "sexual",
+      "suffixable": false
+    }
+  ],
+  "whitelist": [
+    "assembly",
+    "assist",
+    "assassin",
+    "assassinate",
+    "assistant",
+    "assessment",
+    "bass",
+    "class",
+    "classic",
+    "classify",
+    "classroom",
+    "grass",
+    "grasshopper",
+    "mass",
+    "massive",
+    "pass",
+    "passage",
+    "passenger",
+    "passion",
+    "passive",
+    "passport",
+    "assume",
+    "assignment",
+    "associate",
+    "assertion",
+    "asset",
+    "assess",
+    "dickens",
+    "cocktail",
+    "cockatoo",
+    "cockatiel",
+    "cockpit",
+    "cockroach",
+    "cockney",
+    "peacock",
+    "hancock",
+    "shuttlecock",
+    "woodcock",
+    "scrap",
+    "scrappy",
+    "shitake",
+    "shiitake",
+    "document",
+    "buckle",
+    "piston",
+    "bassist",
+    "embassy",
+    "cassette",
+    "hassle",
+    "lasso",
+    "massage",
+    "compass",
+    "trespass",
+    "harass",
+    "cocoon",
+    "raccoon",
+    "tycoon",
+    "dike",
+    "vandyke",
+    "scunthorpe",
+    "cocked",
+    "hello",
+    "shell",
+    "seashell",
+    "eggshell",
+    "nutshell",
+    "bombshell",
+    "helium",
+    "helicopter",
+    "helmet",
+    "heller",
+    "puck",
+    "pucks",
+    "prickle",
+    "prickly",
+    "screwdriver",
+    "corkscrew",
+    "pussycat",
+    "pussywillow",
+    "pussyfoot",
+    "penistone",
+    "analysis",
+    "analyst",
+    "analog",
+    "analogy",
+    "analytical",
+    "analyze",
+    "grape",
+    "drape",
+    "scrape",
+    "rapeseed",
+    "therapist",
+    "therapy",
+    "title",
+    "titan",
+    "titillate",
+    "homogeneous",
+    "homogenous",
+    "homophone",
+    "homonym",
+    "homologous",
+    "homosexual",
+    "shaggy",
+    "doorknob",
+    "spunky",
+    "cocky"
+  ]
+}
