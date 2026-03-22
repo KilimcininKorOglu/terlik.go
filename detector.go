@@ -458,7 +458,6 @@ func (d *detector) mapNormalizedToOriginal(originalText string, normIndex int, _
 		if segment == "" {
 			if i < len(separators) {
 				origOffset += len(separators[i])
-				normOffset++
 			}
 			continue
 		}
