@@ -107,8 +107,8 @@ func (d *dictionary) removeWords(words []string) {
 			removeSet[strings.ToLower(v)] = true
 		}
 
-		// Filter allWords
-		filtered := d.allWords[:0]
+		// Filter allWords (fresh slice to allow GC of removed strings)
+		filtered := make([]string, 0, len(d.allWords))
 		for _, w := range d.allWords {
 			if !removeSet[w] {
 				filtered = append(filtered, w)
