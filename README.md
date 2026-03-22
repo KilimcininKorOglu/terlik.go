@@ -55,22 +55,22 @@ func main() {
 
 ## What It Catches
 
-| Evasion technique    | Example                              | Detected as     |
-|:---------------------|:-------------------------------------|:----------------|
-| Plain text           | `siktir`                             | sik              |
-| Turkish I/I          | `SIKTIR`                             | sik              |
-| Leet speak           | `$1kt1r`, `@pt@l`                   | sik, aptal       |
-| Visual leet (TR)     | `8ok`, `6ot`, `i8ne`, `s2k`         | bok, got, ibne, sik |
-| Number words (TR)    | `s2mle` (s+iki+mle)                 | sik (sikimle)    |
-| Separators           | `s.i.k.t.i.r`, `s_i_k`              | sik              |
-| Char repetition      | `siiiiiktir`, `pu$ttt`               | sik, pust        |
-| Mixed punctuation    | `or*spu`, `g0t_v3r3n`               | orospu, got      |
-| Suffix forms         | `siktiler`, `orospuluk`, `gotune`    | sik, orospu, got |
-| Suffix + evasion     | `s.i.k.t.i.r.l.e.r`, `$1kt1rler`   | sik              |
-| Zero-width chars     | `s<ZWSP>i<ZWSP>k<ZWSP>t<ZWSP>i<ZWSP>r` | sik          |
-| Cyrillic confusables | Latin-looking Cyrillic substitutions | detected         |
-| Phonetic (EN)        | `phuck`, `phucking`                  | fuck             |
-| Extended leet (EN)   | `8itch`, `s#it`, `ni66er`            | bitch, shit, nigger |
+| Evasion technique    | Example                                | Detected as         |
+|:---------------------|:---------------------------------------|:--------------------|
+| Plain text           | `siktir`                               | sik                 |
+| Turkish I/I          | `SIKTIR`                               | sik                 |
+| Leet speak           | `$1kt1r`, `@pt@l`                      | sik, aptal          |
+| Visual leet (TR)     | `8ok`, `6ot`, `i8ne`, `s2k`            | bok, got, ibne, sik |
+| Number words (TR)    | `s2mle` (s+iki+mle)                    | sik (sikimle)       |
+| Separators           | `s.i.k.t.i.r`, `s_i_k`                 | sik                 |
+| Char repetition      | `siiiiiktir`, `pu$ttt`                 | sik, pust           |
+| Mixed punctuation    | `or*spu`, `g0t_v3r3n`                  | orospu, got         |
+| Suffix forms         | `siktiler`, `orospuluk`, `gotune`      | sik, orospu, got    |
+| Suffix + evasion     | `s.i.k.t.i.r.l.e.r`, `$1kt1rler`       | sik                 |
+| Zero-width chars     | `s<ZWSP>i<ZWSP>k<ZWSP>t<ZWSP>i<ZWSP>r` | sik                 |
+| Cyrillic confusables | Latin-looking Cyrillic substitutions   | detected            |
+| Phonetic (EN)        | `phuck`, `phucking`                    | fuck                |
+| Extended leet (EN)   | `8itch`, `s#it`, `ni66er`              | bitch, shit, nigger |
 
 ### False Positive Prevention
 
@@ -186,40 +186,40 @@ core.ContainsProfanity("test", nil)
 
 ### Options
 
-| Field              | Type              | Default         | Description                                  |
-|:-------------------|:------------------|:----------------|:---------------------------------------------|
-| `Language`         | `string`          | `"tr"`          | Language code: tr, en, es, de                |
-| `Mode`             | `Mode`            | `"balanced"`    | Detection strictness                         |
-| `MaskStyle`        | `MaskStyle`       | `"stars"`       | How to mask matched text                     |
-| `ReplaceMask`      | `string`          | `"[***]"`       | Replacement text for `MaskReplace` style     |
-| `CustomList`       | `[]string`        | `nil`           | Additional words to detect                   |
-| `Whitelist`        | `[]string`        | `nil`           | Words to never flag as profanity             |
-| `EnableFuzzy`      | `bool`            | `false`         | Enable fuzzy matching                        |
-| `FuzzyThreshold`   | `float64`         | `0.8`           | Similarity threshold (0.0-1.0)               |
-| `FuzzyAlgorithm`   | `FuzzyAlgorithm`  | `"levenshtein"` | Fuzzy algorithm: levenshtein or dice         |
-| `MaxLength`        | `int`             | `10000`         | Maximum input length in runes                |
-| `BackgroundWarmup` | `bool`            | `false`         | Compile patterns in a background goroutine   |
-| `ExtendDictionary` | `*DictionaryData` | `nil`           | Merge additional dictionary entries          |
-| `DisableLeetDecode`| `bool`            | `false`         | Skip leet speak decoding stage               |
-| `DisableCompound`  | `bool`            | `false`         | Skip CamelCase decompounding pass            |
-| `MinSeverity`      | `Severity`        | `""`            | Filter results below this severity           |
-| `ExcludeCategories`| `[]Category`      | `nil`           | Exclude specific categories from results     |
+| Field               | Type              | Default         | Description                                |
+|:--------------------|:------------------|:----------------|:-------------------------------------------|
+| `Language`          | `string`          | `"tr"`          | Language code: tr, en, es, de              |
+| `Mode`              | `Mode`            | `"balanced"`    | Detection strictness                       |
+| `MaskStyle`         | `MaskStyle`       | `"stars"`       | How to mask matched text                   |
+| `ReplaceMask`       | `string`          | `"[***]"`       | Replacement text for `MaskReplace` style   |
+| `CustomList`        | `[]string`        | `nil`           | Additional words to detect                 |
+| `Whitelist`         | `[]string`        | `nil`           | Words to never flag as profanity           |
+| `EnableFuzzy`       | `bool`            | `false`         | Enable fuzzy matching                      |
+| `FuzzyThreshold`    | `float64`         | `0.8`           | Similarity threshold (0.0-1.0)             |
+| `FuzzyAlgorithm`    | `FuzzyAlgorithm`  | `"levenshtein"` | Fuzzy algorithm: levenshtein or dice       |
+| `MaxLength`         | `int`             | `10000`         | Maximum input length in runes              |
+| `BackgroundWarmup`  | `bool`            | `false`         | Compile patterns in a background goroutine |
+| `ExtendDictionary`  | `*DictionaryData` | `nil`           | Merge additional dictionary entries        |
+| `DisableLeetDecode` | `bool`            | `false`         | Skip leet speak decoding stage             |
+| `DisableCompound`   | `bool`            | `false`         | Skip CamelCase decompounding pass          |
+| `MinSeverity`       | `Severity`        | `""`            | Filter results below this severity         |
+| `ExcludeCategories` | `[]Category`      | `nil`           | Exclude specific categories from results   |
 
 ### Detection Modes
 
-| Mode       | Behavior                                        | Best for                |
-|:-----------|:------------------------------------------------|:------------------------|
-| `strict`   | Normalize + exact word match only               | Minimum false positives |
-| `balanced` | Normalize + regex pattern matching              | General use (default)   |
-| `loose`    | Pattern matching + fuzzy similarity matching    | Maximum coverage        |
+| Mode       | Behavior                                     | Best for                |
+|:-----------|:---------------------------------------------|:------------------------|
+| `strict`   | Normalize + exact word match only            | Minimum false positives |
+| `balanced` | Normalize + regex pattern matching           | General use (default)   |
+| `loose`    | Pattern matching + fuzzy similarity matching | Maximum coverage        |
 
 ### Mask Styles
 
-| Style     | Input      | Output     |
-|:----------|:-----------|:-----------|
-| `stars`   | `siktir`   | `******`   |
-| `partial` | `siktir`   | `s****r`   |
-| `replace` | `siktir`   | `[***]`    |
+| Style     | Input    | Output   |
+|:----------|:---------|:---------|
+| `stars`   | `siktir` | `******` |
+| `partial` | `siktir` | `s****r` |
+| `replace` | `siktir` | `[***]`  |
 
 ## Extending the Dictionary
 
