@@ -585,7 +585,7 @@ func (d *detector) deduplicateResults(results []MatchResult) []MatchResult {
 	seen := make(map[int]MatchResult)
 	for _, r := range results {
 		existing, ok := seen[r.Index]
-		if !ok || len(r.Word) > len(existing.Word) {
+		if !ok || utf8.RuneCountInString(r.Word) > utf8.RuneCountInString(existing.Word) {
 			seen[r.Index] = r
 		}
 	}
