@@ -69,9 +69,9 @@ func (d *detector) buildNormalizedLookup() {
 		n := d.normalizeFn(word)
 		if !d.normalizedWordSet[n] {
 			d.normalizedWordSlice = append(d.normalizedWordSlice, n)
+			d.normalizedWordToRoot[n] = word
 		}
 		d.normalizedWordSet[n] = true
-		d.normalizedWordToRoot[n] = word
 	}
 	// Sort for deterministic fuzzy iteration (Go maps have random iteration order)
 	sort.Strings(d.normalizedWordSlice)
