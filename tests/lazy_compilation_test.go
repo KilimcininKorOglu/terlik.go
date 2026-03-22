@@ -1,7 +1,7 @@
 package terlik_test
 
 import (
-	"terlik"
+	"github.com/KilimcininKorOglu/terlik.go"
 	"testing"
 	"time"
 )

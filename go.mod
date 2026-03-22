@@ -1,4 +1,4 @@
-module terlik
+module github.com/KilimcininKorOglu/terlik.go
 
 go 1.22
 

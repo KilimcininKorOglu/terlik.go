@@ -19,7 +19,7 @@ Ships with **Turkish** (flagship, full coverage), **English**, **Spanish**, and 
 ## Install
 
 ```bash
-go get terlik
+go get github.com/KilimcininKorOglu/terlik.go
 ```
 
 Requires Go 1.22 or later.
@@ -31,7 +31,7 @@ package main
 
 import (
     "fmt"
-    "terlik"
+    terlik "github.com/KilimcininKorOglu/terlik.go"
 )
 
 func main() {

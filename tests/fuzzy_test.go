@@ -2,7 +2,7 @@ package terlik_test
 
 import (
 	"math"
-	"terlik"
+	"github.com/KilimcininKorOglu/terlik.go"
 	"testing"
 )
 
