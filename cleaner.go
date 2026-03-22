@@ -45,8 +45,25 @@ func CleanText(text string, matches []MatchResult, style MaskStyle, replaceMask 
 		return sorted[i].Index > sorted[j].Index
 	})
 
-	result := text
+	// Filter overlapping matches (keep first encountered = highest index)
+	var filtered []MatchResult
 	for _, m := range sorted {
+		mEnd := m.Index + len(m.Word)
+		overlap := false
+		for _, kept := range filtered {
+			keptEnd := kept.Index + len(kept.Word)
+			if m.Index < keptEnd && mEnd > kept.Index {
+				overlap = true
+				break
+			}
+		}
+		if !overlap {
+			filtered = append(filtered, m)
+		}
+	}
+
+	result := text
+	for _, m := range filtered {
 		masked := ApplyMask(m.Word, style, replaceMask)
 		end := m.Index + len(m.Word)
 		if m.Index >= 0 && end <= len(result) {
