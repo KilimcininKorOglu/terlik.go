@@ -30,7 +30,7 @@ type detector struct {
 	safeNormalizeFn      func(string) string
 	locale               string
 	charClasses          map[string]string
-	mu                   sync.Mutex
+	mu                   sync.RWMutex
 }
 
 // patternCache is a package-level cache shared across detector instances.
@@ -118,23 +118,21 @@ func (d *detector) compile() {
 }
 
 func (d *detector) recompile() {
-	d.mu.Lock()
-	d.cacheKey = ""
-	d.compiled = false
-	d.mu.Unlock()
-
-	d.patterns = compilePatterns(
+	// Compile patterns without lock (expensive, reads only immutable data)
+	patterns := compilePatterns(
 		d.dict.getEntries(),
 		d.dict.getSuffixes(),
 		d.charClasses,
 		d.normalizeFn,
 	)
 
+	// Assign all shared state under a single lock
 	d.mu.Lock()
+	d.cacheKey = ""
+	d.patterns = patterns
 	d.compiled = true
-	d.mu.Unlock()
-
 	d.buildNormalizedLookup()
+	d.mu.Unlock()
 }
 
 func (d *detector) getPatterns() map[string]*regexp.Regexp {
@@ -217,6 +215,11 @@ func (d *detector) detectStrict(text string, whitelist map[string]bool, results 
 	words := strings.Fields(normalized)
 	origWords, origPositions := fieldPositions(text)
 
+	d.mu.RLock()
+	wordSet := d.normalizedWordSet
+	wordToRoot := d.normalizedWordToRoot
+	d.mu.RUnlock()
+
 	for wi := 0; wi < len(origWords); wi++ {
 		origWord := origWords[wi]
 		normWord := ""
@@ -232,8 +235,8 @@ func (d *detector) detectStrict(text string, whitelist map[string]bool, results 
 			continue
 		}
 
-		if d.normalizedWordSet[normWord] {
-			dictWord := d.normalizedWordToRoot[normWord]
+		if wordSet[normWord] {
+			dictWord := wordToRoot[normWord]
 			entry := d.dict.findRootForWord(dictWord)
 			if entry != nil {
 				byteIndex := 0
@@ -492,6 +495,11 @@ func (d *detector) detectFuzzy(
 	origWords, origPositions := fieldPositions(text)
 	matcher := GetFuzzyMatcher(algorithm)
 
+	d.mu.RLock()
+	wordSlice := d.normalizedWordSlice
+	wordToRoot := d.normalizedWordToRoot
+	d.mu.RUnlock()
+
 	existingIndices := make(map[int]bool)
 	for _, r := range *results {
 		existingIndices[r.Index] = true
@@ -519,7 +527,7 @@ func (d *detector) detectFuzzy(
 			byteIndex = origPositions[wi]
 		}
 
-		for _, normDict := range d.normalizedWordSlice {
+		for _, normDict := range wordSlice {
 			if utf8.RuneCountInString(normDict) < 3 {
 				continue
 			}
@@ -527,7 +535,7 @@ func (d *detector) detectFuzzy(
 			similarity := matcher(word, normDict)
 			if similarity >= threshold {
 				if !existingIndices[byteIndex] {
-					dictWord := d.normalizedWordToRoot[normDict]
+					dictWord := wordToRoot[normDict]
 					entry := d.dict.findRootForWord(dictWord)
 					if entry != nil {
 						*results = append(*results, MatchResult{
