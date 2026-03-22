@@ -357,7 +357,13 @@ func (d *detector) runPatterns(
 		exCats = options.ExcludeCategories
 	}
 
+	callStart := time.Now()
+
 	for _, pattern := range patterns {
+		if time.Since(callStart).Milliseconds() > regexTimeoutMs {
+			break
+		}
+
 		// Skip patterns that will be filtered anyway
 		if minSev != "" && SeverityOrder[pattern.severity] < SeverityOrder[minSev] {
 			continue
@@ -375,7 +381,6 @@ func (d *detector) runPatterns(
 			}
 		}
 
-		patternStart := time.Now()
 		matches := findMatchesWithBoundaries(pattern.regex, searchText)
 
 		for _, m := range matches {
@@ -432,10 +437,6 @@ func (d *detector) runPatterns(
 					})
 					existingIndices[matchIndex] = true
 				}
-			}
-
-			if time.Since(patternStart).Milliseconds() > regexTimeoutMs {
-				break
 			}
 		}
 	}
