@@ -474,6 +474,16 @@ func (d *detector) mapNormalizedToOriginal(originalText string, normIndex int, _
 		}
 
 		normWord := d.normalizeFn(segment)
+
+		// Skip segments that normalize to "" (e.g., invisible-char-only tokens)
+		if len(normWord) == 0 {
+			origOffset += len(segment)
+			if i < len(separators) {
+				origOffset += len(separators[i])
+			}
+			continue
+		}
+
 		normEnd := normOffset + len(normWord)
 
 		if normIndex >= normOffset && normIndex < normEnd {
