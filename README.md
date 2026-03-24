@@ -336,16 +336,27 @@ TerlikCore (core.go)
 dictdata/*.json                       -- embedded dictionary files (go:embed)
 schema.go                             -- dictionary validation + merge
 types.go                              -- all types, constants, enums
+
+tools/spdg/                           -- Synthetic Profanity Dataset Generator
+  |-- main.go                          -- CLI entry point
+  |-- generator.go                     -- example rendering + difficulty
+  |-- transform.go                     -- 13 text transforms
+  |-- prng.go                          -- mulberry32 deterministic PRNG
+  |-- loader.go                        -- embedded data loading (go:embed)
+  |-- writer.go                        -- JSONL + CSV output
+  |-- stats.go                         -- statistics + validation
+  |-- data/{tr,en,es,de,shared}/       -- embedded language data files
 ```
 
 ### Build and Test
 
 ```bash
 go build ./...                        # Build
-go test ./...                         # Run all 1340 tests
+go test ./...                         # Run all tests
 go vet ./...                          # Static analysis
 go test -run TestFunctionName ./...   # Run a single test
 go test -v ./tests/                   # Run external tests with verbose output
+go test -race ./...                   # Run with race detector
 ```
 
 ### Test Organization
@@ -353,8 +364,46 @@ go test -v ./tests/                   # Run external tests with verbose output
 Tests are split across two packages:
 
 - **`terlik_test.go`** (root, `package terlik`) -- internal tests for unexported functions like `collapseRepeats`, `expandNumbers`, `turkishToLower`
-- **`tests/`** (20 files, `package terlik_test`) -- external tests covering the full public API
+- **`tests/`** (21 files, `package terlik_test`) -- external tests covering the full public API
+- **`tests/spdg_test.go`** -- SPDG automated detection tests (skipped if JSONL output not present)
 - **`tests/helpers_test.go`** -- shared test helpers: `mustNew`, `assertDetects`, `assertClean`, `assertDetectsRoot`
+
+### SPDG (Synthetic Profanity Dataset Generator)
+
+A standalone CLI tool that generates labeled datasets for benchmarking the detection engine. Ported from the original terlik.js SPDG.
+
+```bash
+# Generate datasets (500 positive + 500 negative per language)
+go run ./tools/spdg --tr --pos 500 --neg 500 --seed 42 --stats --validate
+go run ./tools/spdg --en --pos 500 --neg 500 --seed 42 --stats
+go run ./tools/spdg --es --pos 500 --neg 500 --seed 42
+go run ./tools/spdg --de --pos 500 --neg 500 --seed 42
+
+# Generate and run SPDG tests
+go run ./tools/spdg --tr --pos 500 --neg 500 --seed 42 --out tools/spdg/output
+go run ./tools/spdg --en --pos 500 --neg 500 --seed 42 --out tools/spdg/output
+go run ./tools/spdg --es --pos 500 --neg 500 --seed 42 --out tools/spdg/output
+go run ./tools/spdg --de --pos 500 --neg 500 --seed 42 --out tools/spdg/output
+go test -v -run TestSPDG ./tests/
+```
+
+Features:
+- 13 text transforms (leet, separator, zalgo, zwc, unicode, suffix, case, charRepeat, split, emojiMix, vowelDrop, reverse, doubling)
+- 4 difficulty levels: easy (0-1 transforms), medium (1-2), hard (2-3), extreme (3-5)
+- Deterministic output via mulberry32 PRNG (same seed = same dataset)
+- JSONL and CSV output formats
+- Built-in deduplication and validation
+- All data files embedded via `go:embed` (zero external dependency)
+
+SPDG detection thresholds:
+
+| Difficulty | Threshold | Description                   |
+|:-----------|----------:|:------------------------------|
+| easy       |      85%  | Plain text or single transform |
+| medium     |      65%  | 1-2 transforms combined       |
+| hard       |      40%  | 2-3 transforms combined       |
+| extreme    |       --  | Report only, no threshold     |
+| FP rate    |      <5%  | Clean text false positive cap  |
 
 ### Go-Specific Design Decisions
 
