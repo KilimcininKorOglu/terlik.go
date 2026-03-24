@@ -305,12 +305,22 @@ func (d *detector) detectPattern(text string, whitelist map[string]bool, results
 
 	// Pass 1: locale-lowered text
 	lowerText := localeLowerCase(text, d.locale)
-	isNorm := lowerText != text && len(lowerText) == len(text)
-	d.runPatterns(lowerText, text, whitelist, results, isNorm, options)
+	passOneRan := false
+	if lowerText == text {
+		// No case change — positions are identical, no mapping needed
+		d.runPatterns(lowerText, text, whitelist, results, false, options)
+		passOneRan = true
+	} else if len(lowerText) == len(text) {
+		// Case changed but byte lengths match — safe for normalized mapping
+		d.runPatterns(lowerText, text, whitelist, results, true, options)
+		passOneRan = true
+	}
+	// else: byte lengths differ (e.g., Turkish I→ı), skip Pass 1.
 
 	// Pass 2: fully normalized text
+	// Always run if Pass 1 was skipped, or if normalized text differs from lowerText
 	normalizedText := activeNormFn(text)
-	if normalizedText != lowerText && len(normalizedText) > 0 {
+	if len(normalizedText) > 0 && (!passOneRan || normalizedText != lowerText) {
 		d.runPatterns(normalizedText, text, whitelist, results, true, options)
 	}
 
