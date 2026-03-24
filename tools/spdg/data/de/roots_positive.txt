@@ -1,0 +1,30 @@
+# Positive (toxic) root words — German
+# From dictionary.json entries
+scheiße
+fick
+arsch
+hurensohn
+hure
+fotze
+wichser
+schwanz
+schlampe
+mistkerl
+idiot
+dumm
+depp
+vollidiot
+missgeburt
+drecksau
+dreck
+trottel
+schwuchtel
+spast
+miststück
+bastard
+penner
+blödmann
+vollpfosten
+hackfresse
+pissnelke
+spacken

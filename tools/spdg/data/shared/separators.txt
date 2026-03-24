@@ -1,0 +1,17 @@
+# Separator characters used to split words
+# One separator per line
+.
+-
+_
+*
++
+~
+=
+|
+/
+\
+,
+;
+:
+'
+`

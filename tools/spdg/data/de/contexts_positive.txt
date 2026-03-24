@@ -1,0 +1,17 @@
+# Positive (toxic) context sentences — German
+# {word} placeholder for root word insertion
+im spielchat hat er mich {word} genannt
+jemand hat {word} in die kommentare geschrieben
+der spieler hoerte nicht auf {word} zu sagen
+diese {word} beleidigung war voellig unnoetig
+hoer auf so ein {word} zu sein
+die nachricht enthielt das wort {word}
+warum nennst du jemanden {word}
+der beitrag war voll von {word}
+{word} ist kein angemessenes wort
+sie schrien {word} zum schiedsrichter
+online trolle schreiben ueberall {word}
+die bewertung war nur {word} sprache
+er schrieb mir und nannte mich {word}
+{word} graffiti war an die wand gesprueht
+der streit eskalierte mit {word} beleidigungen

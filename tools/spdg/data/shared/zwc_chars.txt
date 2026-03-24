@@ -1,0 +1,13 @@
+# Zero-width characters used for evasion
+# One unicode escape per line
+\u200b
+\u200c
+\u200d
+\u200e
+\u200f
+\u2060
+\u2061
+\u2062
+\u2063
+\u2064
+\ufeff

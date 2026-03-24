@@ -1,0 +1,17 @@
+# Positive (toxic) templates — German
+# {word} placeholder for root word insertion
+du {word}
+{word} dich
+halt die {word}
+du bist ein {word}
+so ein {word}
+verdammter {word}
+{word} nochmal
+elender {word}
+du blöder {word}
+{word} gesicht
+du alter {word}
+totaler {word}
+absoluter {word}
+geh {word} dich
+{word} typ

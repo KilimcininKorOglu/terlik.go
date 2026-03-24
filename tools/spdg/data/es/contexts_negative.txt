@@ -1,0 +1,17 @@
+# Negative (clean) context sentences — Spanish
+# {word} placeholder for root word insertion
+fui a la tienda y compre {word}
+la exposicion de {word} en el museo fue fantastica
+mi abuela hace la mejor receta de {word}
+la nueva tecnologia de {word} es revolucionaria
+estudiamos {word} en la clase de ciencias
+el festival de {word} atrajo miles de visitantes
+la produccion de {word} aumento un veinte por ciento
+el documental sobre {word} fue muy informativo
+me inscribi en un taller de {word}
+el mercado de {word} crece rapidamente
+el profesor explico {word} con gran detalle
+la industria de {word} crea muchos empleos
+visitamos la fabrica de {word} durante el viaje
+la investigacion sobre {word} ha avanzado mucho
+el libro sobre {word} fue un exito de ventas

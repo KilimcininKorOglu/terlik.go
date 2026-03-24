@@ -1,0 +1,17 @@
+# Negative (clean) context sentences — German
+# {word} placeholder for root word insertion
+ich ging in den laden und kaufte {word}
+die {word} ausstellung im museum war fantastisch
+meine oma macht das beste {word} rezept
+die neue {word} technologie ist revolutionaer
+wir haben {word} im unterricht studiert
+das {word} festival zog tausende besucher an
+die {word} produktion stieg um zwanzig prozent
+die dokumentation ueber {word} war sehr informativ
+ich habe mich fuer einen {word} kurs angemeldet
+der {word} markt waechst schnell weltweit
+der lehrer erklaerte {word} sehr ausfuehrlich
+die {word} industrie schafft viele arbeitsplaetze
+wir besuchten die {word} fabrik waehrend der reise
+die forschung ueber {word} hat grosse fortschritte gemacht
+das buch ueber {word} war ein bestseller

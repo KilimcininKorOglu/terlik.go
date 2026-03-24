@@ -1,0 +1,8 @@
+# Negative (clean) root words — German
+# From dictionary.json whitelist
+ficktion
+arschen
+schwanzen
+schwanger
+schwangerschaft
+geschichte

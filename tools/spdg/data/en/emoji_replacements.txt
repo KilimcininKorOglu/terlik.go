@@ -1,0 +1,27 @@
+# Emoji replacements — inserted between letters
+# Format: emoji (one per line)
+🤬
+💩
+🖕
+😡
+👊
+💀
+🔥
+😤
+🤮
+👎
+⚠️
+❌
+🚫
+💢
+😈
+🤡
+🐒
+🐷
+🐍
+🤢
+☠️
+🧠
+🚽
+🪳
+🤏

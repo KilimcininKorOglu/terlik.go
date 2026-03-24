@@ -1,0 +1,23 @@
+# Negative (clean) root words — Spanish
+# From dictionary.json whitelist
+putamen
+computadora
+computar
+disputar
+disputa
+reputacion
+imputar
+inocular
+acular
+calcular
+icular
+vehicular
+particular
+articulo
+maricopa
+pollo
+pollito
+polleria
+polluelo
+folleto
+follaje

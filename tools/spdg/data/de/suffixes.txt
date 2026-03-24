@@ -1,0 +1,9 @@
+# German suffixes — from dictionary.json
+en
+er
+es
+em
+ung
+e
+te
+st

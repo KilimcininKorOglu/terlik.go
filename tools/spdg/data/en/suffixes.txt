@@ -1,0 +1,36 @@
+# English suffixes — aligned with terlik.js EN suffix engine (28 suffixes)
+# Only includes suffixes that the detection engine actually supports
+
+# === INFLECTIONAL ===
+s
+es
+ed
+en
+ing
+er
+ers
+est
+
+# === DERIVATIONAL (productive with profanity) ===
+ly
+ness
+ery
+ish
+able
+dom
+less
+y
+
+# === COMPOUND ELEMENTS (productive in profanity) ===
+head
+face
+bag
+hole
+wad
+tard
+ass
+job
+boy
+lord
+stain
+monger

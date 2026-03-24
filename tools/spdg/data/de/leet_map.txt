@@ -1,0 +1,8 @@
+# Leet speak mapping — reversed from config.ts leetMap
+# Format: letter -> leet_chars (comma separated)
+o -> 0
+i -> 1,!
+e -> 3
+a -> 4,@
+s -> 5,$
+t -> 7

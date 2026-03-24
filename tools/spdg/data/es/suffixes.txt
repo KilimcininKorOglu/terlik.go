@@ -1,0 +1,14 @@
+# Spanish suffixes — from dictionary.json
+ado
+ando
+ido
+iendo
+ar
+er
+ir
+os
+as
+es
+ito
+ita
+azo

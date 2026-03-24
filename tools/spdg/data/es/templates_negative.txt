@@ -1,0 +1,17 @@
+# Negative (clean) templates — Spanish
+# {word} placeholder for root word insertion
+hoy compre {word} en la tienda
+el {word} es muy interesante
+{word} informacion disponible
+nuevo modelo de {word}
+los precios del {word} subieron
+la mejor marca de {word}
+guia de {word} para principiantes
+este {word} funciona muy bien
+recomiendo el {word} a todos
+{word} revision y comparacion
+{word} de calidad en venta
+el {word} llego a tiempo
+especificaciones del {word}
+la tecnologia de {word} avanza
+{word} es muy popular ahora

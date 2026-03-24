@@ -1,0 +1,105 @@
+# Positive (toxic) templates — English
+# {word} placeholder for root word insertion
+
+# === DIRECT INSULT ===
+you {word}
+{word} you
+you are a {word}
+stupid {word}
+{word} off
+what a {word}
+total {word}
+absolute {word}
+you little {word}
+{word} face
+dumb {word}
+{word} head
+you stupid {word}
+such a {word}
+biggest {word} ever
+what an absolute {word}
+
+# === COMMANDS / AGGRESSION ===
+shut the {word} up
+go {word} yourself
+get {word}ed
+{word} off mate
+eat {word}
+kiss my {word}
+suck my {word}
+{word} outta here
+go to {word}
+{word} this
+piece of {word}
+
+# === SOCIAL MEDIA / CHAT ===
+{word}!!!
+{word}!!!!!!!
+lmao {word}
+{word} lol
+{word} xd
+bruh {word}
+{word} bro
+{word} dude
+omg {word}
+haha {word}
+lmfao {word}
+rofl {word}
+{word} af
+{word} asf
+no cap {word}
+{word} fr fr
+{word} istg
+lowkey {word}
+highkey {word}
+
+# === QUESTION / RHETORICAL ===
+are you a {word}?
+why are you such a {word}?
+how can you be this {word}?
+who the {word} cares?
+what the {word} is wrong with you?
+what the {word}?
+why the {word} not?
+who the {word} asked?
+do you think i'm a {word}?
+
+# === CONTEXTUAL / INDIRECT ===
+he is such a {word}
+she called me a {word}
+they are all {word}
+that was so {word}
+the most {word} thing ever
+nothing but a {word}
+typical {word} behavior
+acting like a {word}
+pure {word}
+straight up {word}
+
+# === THREAT / HOSTILITY ===
+{word} you and your family
+i'll {word} you up
+{word} die
+drop dead {word}
+rot in hell {word}
+{word} your life
+{word} everyone here
+you deserve to be {word}ed
+get {word}ed loser
+{word} yourself
+
+# === IRONY / SARCASM ===
+oh great another {word}
+wow what a {word} move
+brilliant {word} idea
+congrats you {word}
+nice one {word}
+real {word} genius here
+truly a {word} masterpiece
+
+# === LONG PATTERNS ===
+you are the biggest {word} i have ever met
+never seen such a {word} person in my life
+this is the most {word} thing i have read
+everyone knows you are a {word}
+imagine being this much of a {word}

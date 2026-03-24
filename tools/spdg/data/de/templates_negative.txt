@@ -1,0 +1,17 @@
+# Negative (clean) templates — German
+# {word} placeholder for root word insertion
+heute habe ich {word} gekauft
+der {word} ist sehr interessant
+{word} informationen verfuegbar
+neues {word} modell erschienen
+die preise fuer {word} sind gestiegen
+die beste {word} marke
+{word} anleitung fuer anfaenger
+dieses {word} funktioniert sehr gut
+ich empfehle {word} jedem
+{word} bewertung und vergleich
+hochwertiges {word} zu verkaufen
+der {word} wurde puenktlich geliefert
+{word} spezifikationen aufgelistet
+die {word} technologie entwickelt sich
+{word} ist jetzt sehr beliebt

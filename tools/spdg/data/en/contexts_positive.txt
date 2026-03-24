@@ -1,0 +1,42 @@
+# Positive (toxic) context sentences — English
+# {word} placeholder for root word insertion
+he called me a {word} in the game chat
+someone wrote {word} in the comments
+the player kept saying {word} to everyone
+that {word} remark was totally uncalled for
+stop being such a {word} to people
+the message contained {word} language
+why would you call someone a {word}
+the post was full of {word} and hate
+{word} is not an appropriate word to use
+they screamed {word} at the referee
+online trolls keep typing {word} everywhere
+the review was just pure {word} language
+he texted me calling me a {word}
+{word} graffiti was sprayed on the wall
+the argument escalated with {word} insults
+she kept spamming {word} in the group chat
+the stream was banned for saying {word} on air
+someone reported the {word} comment on the forum
+kids should not be exposed to {word} content
+the teacher heard him say {word} in class
+he whispered {word} under his breath during the meeting
+the email subject line contained {word} which is inappropriate
+anonymous users posted {word} all over the website
+the entire thread was deleted because of {word} language
+they got kicked from the server for typing {word}
+social media filters should catch {word} automatically
+the voicemail was full of {word} and threats
+graffiti reading {word} appeared on the school fence
+the parent complained about {word} language in the game
+he DM'd me just to say {word} out of nowhere
+toxic players spam {word} after every match
+the chatbot response included {word} which was a bug
+moderators removed the {word} post within minutes
+the review contained nothing but {word} and anger
+someone carved {word} into the bathroom stall
+the podcast host casually dropped {word} during the interview
+his username literally contains {word} spelled backwards
+the complaint mentioned repeated use of {word} at work
+a sign reading {word} was held up at the protest
+the automated filter missed {word} because of unusual spacing

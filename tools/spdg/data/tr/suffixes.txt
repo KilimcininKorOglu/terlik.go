@@ -1,0 +1,116 @@
+# Türkçe ekler — agglutination simulation
+
+# Fiil çekim ekleri
+tir
+dir
+il
+in
+ik
+uk
+en
+ici
+di
+ti
+dim
+tim
+din
+dik
+tik
+mis
+mus
+iyor
+uyor
+ecek
+acak
+ecem
+acam
+icem
+er
+ir
+ar
+eyim
+ayim
+elim
+alim
+se
+sa
+im
+um
+sin
+sun
+yim
+mek
+mak
+me
+ma
+is
+us
+
+# Çoğul
+ler
+lar
+
+# İyelik
+si
+i
+un
+lari
+leri
+larin
+lerin
+
+# Hal ekleri
+e
+a
+de
+da
+den
+dan
+te
+ta
+ten
+tan
+
+# İsimden isim
+lik
+luk
+li
+lu
+ci
+cu
+ce
+ca
+
+# Zarf / bağlaç
+le
+la
+ken
+cesine
+casina
+
+# Soru
+misin
+misiniz
+musun
+musunuz
+miyim
+miyiz
+
+# Edilgen / dönüşlü
+esi
+
+# Ek fiil
+dir
+tir
+dır
+tır
+
+# Küçültme / pekiştirme
+cik
+cık
+cuk
+cük
+ce
+ca
+ler
+lar

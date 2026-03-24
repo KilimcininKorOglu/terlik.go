@@ -1,0 +1,17 @@
+# Positive (toxic) context sentences — Spanish
+# {word} placeholder for root word insertion
+en el chat del juego le dijeron {word}
+alguien escribio {word} en los comentarios
+el jugador no paraba de decir {word}
+ese insulto de {word} fue innecesario
+deja de ser tan {word} con la gente
+el mensaje contenia la palabra {word}
+por que le dices {word} a alguien
+la publicacion estaba llena de {word}
+{word} no es una palabra apropiada
+le gritaron {word} al arbitro
+los trolls siguen escribiendo {word}
+la resena era puro lenguaje {word}
+me envio un mensaje diciendome {word}
+habia grafiti de {word} en la pared
+la discusion escalo con insultos de {word}

@@ -1,0 +1,17 @@
+# Positive (toxic) templates — Spanish
+# {word} placeholder for root word insertion
+eres un {word}
+{word} de mierda
+vete a la {word}
+pedazo de {word}
+{word} total
+menudo {word}
+{word} que eres
+no seas {word}
+{word} hijo de
+eres una {word}
+maldito {word}
+{word} asqueroso
+puro {word}
+tremendo {word}
+{word} de porqueria

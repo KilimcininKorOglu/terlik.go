@@ -1,0 +1,42 @@
+# Negative (clean) context sentences — English
+# {word} placeholder for root word insertion
+I went to the store and bought some {word}
+the {word} exhibition at the museum was fantastic
+my grandmother makes the best {word} recipe
+the new {word} technology is revolutionary
+we studied {word} in science class today
+the {word} festival attracted thousands of visitors
+{word} production increased by twenty percent
+the documentary about {word} was very informative
+I signed up for a {word} workshop next week
+the {word} market is growing rapidly worldwide
+our teacher explained {word} in great detail
+the {word} industry creates many jobs
+we visited the {word} factory during our trip
+{word} research has made great progress
+the book about {word} was a bestseller
+my neighbor recommended a great {word} brand
+{word} has become more affordable in recent years
+the {word} competition drew participants from around the world
+I watched a tutorial on how to make {word} at home
+the annual {word} conference is held in September
+she wrote her thesis on {word} and got published
+the government announced new {word} subsidies for farmers
+{word} quality has improved dramatically since last year
+the local {word} shop just opened on main street
+they donated {word} supplies to the community center
+the {word} course at the university is fully booked
+experts predict {word} demand will double by next year
+a new {word} patent was filed last month
+the children learned about {word} during their field trip
+{word} awareness campaigns are making a real difference
+his collection of {word} items is impressive
+the {word} summit brought together leaders from fifty countries
+my doctor recommended {word} as part of a balanced diet
+the startup developed an innovative {word} solution
+we tested three different {word} products and compared results
+the magazine featured an article about sustainable {word}
+{word} standards have been updated to meet new regulations
+volunteers organized a {word} drive for the holiday season
+the {word} app has been downloaded over a million times
+she received an award for her contributions to {word} research

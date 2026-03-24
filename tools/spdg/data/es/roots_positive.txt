@@ -1,0 +1,31 @@
+# Positive (toxic) root words — Spanish
+# From dictionary.json entries
+mierda
+puta
+cabron
+joder
+coño
+verga
+chingar
+pendejo
+marica
+carajo
+idiota
+culo
+zorra
+estupido
+imbecil
+gilipollas
+huevon
+mamada
+pinche
+culero
+cojones
+polla
+follar
+capullo
+guarro
+boludo
+pelotudo
+hostia
+soplapollas

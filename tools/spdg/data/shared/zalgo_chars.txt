@@ -1,0 +1,65 @@
+# Zalgo combining characters (above, below, overlay)
+# One unicode escape per line
+# Combining above
+\u0300
+\u0301
+\u0302
+\u0303
+\u0304
+\u0305
+\u0306
+\u0307
+\u0308
+\u0309
+\u030a
+\u030b
+\u030c
+\u030d
+\u030e
+\u030f
+\u0310
+\u0311
+\u0312
+\u0313
+\u0314
+\u0315
+\u031a
+\u0338
+# Combining below
+\u0316
+\u0317
+\u0318
+\u0319
+\u031c
+\u031d
+\u031e
+\u031f
+\u0320
+\u0321
+\u0322
+\u0323
+\u0324
+\u0325
+\u0326
+\u0327
+\u0328
+\u0329
+\u032a
+\u032b
+\u032c
+\u032d
+\u032e
+\u032f
+\u0330
+\u0331
+\u0332
+\u0333
+\u0339
+\u033a
+\u033b
+\u033c
+# Combining overlay
+\u0334
+\u0335
+\u0336
+\u0337

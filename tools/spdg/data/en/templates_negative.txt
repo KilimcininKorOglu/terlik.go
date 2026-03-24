@@ -1,0 +1,79 @@
+# Negative (clean) templates — English
+# {word} placeholder for root word insertion
+
+# === SHOPPING / PRODUCT ===
+I bought a {word} today
+the {word} is really nice
+new {word} model released
+{word} prices are going up
+best {word} brand in market
+{word} on sale now
+I ordered {word} online
+{word} delivered on time
+{word} review and comparison
+quality {word} for sale
+{word} specifications listed below
+latest {word} technology
+{word} is out of stock
+
+# === INFORMATION / QUESTION ===
+{word} information available online
+{word} how to guide
+{word} tutorial for beginners
+what is {word}
+how does {word} work
+{word} explained simply
+{word} definition and meaning
+learn about {word} today
+{word} for dummies
+{word} frequently asked questions
+
+# === DAILY LIFE ===
+this {word} works great
+I recommend {word} to everyone
+my favorite {word} recipe
+the {word} looks amazing
+we enjoyed the {word} very much
+{word} is popular these days
+everyone loves {word}
+{word} is my go-to choice
+the best {word} in town
+
+# === WORK / EDUCATION ===
+{word} report is ready
+we discussed {word} at the meeting
+{word} project is progressing well
+{word} presentation went great
+{word} homework is due tomorrow
+{word} exam results are out
+studying {word} at university
+{word} research paper published
+{word} conference next month
+
+# === NEWS / INFORMATION ===
+{word} industry is growing
+{word} production increased this year
+{word} exports reached a record
+{word} festival happening this weekend
+{word} season has started
+{word} regulations updated
+new {word} policy announced
+{word} market trends report
+
+# === SOCIAL / CONVERSATION ===
+have you heard about {word}
+what do you think about {word}
+{word} is trending right now
+I just discovered {word}
+{word} is worth trying
+{word} has great reviews
+everyone is talking about {word}
+{word} changed my perspective
+
+# === NATURE / TRAVEL ===
+{word} is a beautiful place
+{word} scenery is breathtaking
+{word} trip was amazing
+planning a {word} vacation
+{word} wildlife is incredible
+{word} park is worth visiting
