@@ -4,17 +4,19 @@ import "strings"
 
 // dictionary manages the profanity word list, whitelist, and suffixes.
 type dictionary struct {
-	entries   map[string]WordEntry
-	whitelist map[string]bool
-	allWords  []string
-	suffixes  []string
+	entries       map[string]WordEntry
+	variantToRoot map[string]string // variant → root key (reverse lookup)
+	whitelist     map[string]bool
+	allWords      []string
+	suffixes      []string
 }
 
 // newDictionary creates a new dictionary from validated dictionary data.
 func newDictionary(data DictionaryData, customWords []string, customWhitelist []string) *dictionary {
 	d := &dictionary{
-		entries:   make(map[string]WordEntry),
-		whitelist: make(map[string]bool),
+		entries:       make(map[string]WordEntry),
+		variantToRoot: make(map[string]string),
+		whitelist:     make(map[string]bool),
 	}
 
 	for _, w := range data.Whitelist {
@@ -56,7 +58,9 @@ func (d *dictionary) addEntry(entry WordEntry) {
 	d.entries[normalizedRoot] = entry
 	d.allWords = append(d.allWords, normalizedRoot)
 	for _, v := range entry.Variants {
-		d.allWords = append(d.allWords, strings.ToLower(v))
+		lv := strings.ToLower(v)
+		d.allWords = append(d.allWords, lv)
+		d.variantToRoot[lv] = normalizedRoot
 	}
 }
 
@@ -104,7 +108,9 @@ func (d *dictionary) removeWords(words []string) {
 		removeSet := make(map[string]bool)
 		removeSet[key] = true
 		for _, v := range entry.Variants {
-			removeSet[strings.ToLower(v)] = true
+			lv := strings.ToLower(v)
+			removeSet[lv] = true
+			delete(d.variantToRoot, lv)
 		}
 
 		// Filter allWords (fresh slice to allow GC of removed strings)
@@ -123,12 +129,9 @@ func (d *dictionary) findRootForWord(word string) *WordEntry {
 	if entry, ok := d.entries[lower]; ok {
 		return &entry
 	}
-	for _, entry := range d.entries {
-		for _, v := range entry.Variants {
-			if strings.ToLower(v) == lower {
-				e := entry
-				return &e
-			}
+	if rootKey, ok := d.variantToRoot[lower]; ok {
+		if entry, ok := d.entries[rootKey]; ok {
+			return &entry
 		}
 	}
 	return nil
