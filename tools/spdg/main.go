@@ -161,6 +161,7 @@ func main() {
 
 	for i := 0; i < opts.pos; i++ {
 		var ex example
+		found := false
 		retries := maxRetries
 		for retries > 0 {
 			ex = renderPositiveExample(data, lang, rand)
@@ -169,26 +170,33 @@ func main() {
 				continue
 			}
 			if !seen[ex.Text] {
+				found = true
 				break
 			}
 			retries--
 		}
-		seen[ex.Text] = true
-		examples = append(examples, ex)
+		if found {
+			seen[ex.Text] = true
+			examples = append(examples, ex)
+		}
 	}
 
 	for i := 0; i < opts.neg; i++ {
 		var ex example
+		found := false
 		retries := maxRetries
 		for retries > 0 {
 			ex = renderNegativeExample(data, rand)
 			if !seen[ex.Text] {
+				found = true
 				break
 			}
 			retries--
 		}
-		seen[ex.Text] = true
-		examples = append(examples, ex)
+		if found {
+			seen[ex.Text] = true
+			examples = append(examples, ex)
+		}
 	}
 
 	genTime := time.Since(startTime)
