@@ -61,20 +61,28 @@ func newDetector(
 	return d
 }
 
-func (d *detector) buildNormalizedLookup() {
-	d.normalizedWordSet = make(map[string]bool)
-	d.normalizedWordToRoot = make(map[string]string)
-	d.normalizedWordSlice = nil
+// buildNormalizedLookupData builds normalized lookup structures without modifying
+// the detector's state. Returns the three structures to be assigned under lock.
+func (d *detector) buildNormalizedLookupData() (map[string]bool, []string, map[string]string) {
+	wordSet := make(map[string]bool)
+	wordToRoot := make(map[string]string)
+	var wordSlice []string
 	for _, word := range d.dict.getAllWords() {
 		n := d.normalizeFn(word)
-		if !d.normalizedWordSet[n] {
-			d.normalizedWordSlice = append(d.normalizedWordSlice, n)
-			d.normalizedWordToRoot[n] = word
+		if !wordSet[n] {
+			wordSlice = append(wordSlice, n)
+			wordToRoot[n] = word
 		}
-		d.normalizedWordSet[n] = true
+		wordSet[n] = true
 	}
-	// Sort for deterministic fuzzy iteration (Go maps have random iteration order)
-	sort.Strings(d.normalizedWordSlice)
+	sort.Strings(wordSlice)
+	return wordSet, wordSlice, wordToRoot
+}
+
+// buildNormalizedLookup rebuilds and assigns normalized lookup structures.
+// Must be called under d.mu.Lock() or during single-threaded initialization.
+func (d *detector) buildNormalizedLookup() {
+	d.normalizedWordSet, d.normalizedWordSlice, d.normalizedWordToRoot = d.buildNormalizedLookupData()
 }
 
 func (d *detector) ensureCompiled() []compiledPattern {
@@ -118,20 +126,23 @@ func (d *detector) compile() {
 }
 
 func (d *detector) recompile() {
-	// Compile patterns without lock (expensive, reads only immutable data)
+	// Build everything outside lock (expensive, reads only immutable data)
 	patterns := compilePatterns(
 		d.dict.getEntries(),
 		d.dict.getSuffixes(),
 		d.charClasses,
 		d.normalizeFn,
 	)
+	wordSet, wordSlice, wordToRoot := d.buildNormalizedLookupData()
 
-	// Assign all shared state under a single lock
+	// Swap all shared state under a short lock
 	d.mu.Lock()
 	d.cacheKey = ""
 	d.patterns = patterns
 	d.compiled = true
-	d.buildNormalizedLookup()
+	d.normalizedWordSet = wordSet
+	d.normalizedWordSlice = wordSlice
+	d.normalizedWordToRoot = wordToRoot
 	d.mu.Unlock()
 }
 
