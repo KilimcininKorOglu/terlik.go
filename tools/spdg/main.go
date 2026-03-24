@@ -152,25 +152,43 @@ func main() {
 		return
 	}
 
-	// Generate examples
+	// Generate examples with deduplication
 	fmt.Println("\n  Generating examples...")
 	startTime := time.Now()
 	var examples []example
+	seen := make(map[string]bool)
+	maxRetries := 50
 
 	for i := 0; i < opts.pos; i++ {
-		ex := renderPositiveExample(data, lang, rand)
-		if opts.difficulty != "all" && ex.Difficulty != opts.difficulty {
-			retries := 10
-			for ex.Difficulty != opts.difficulty && retries > 0 {
-				ex = renderPositiveExample(data, lang, rand)
+		var ex example
+		retries := maxRetries
+		for retries > 0 {
+			ex = renderPositiveExample(data, lang, rand)
+			if opts.difficulty != "all" && ex.Difficulty != opts.difficulty {
 				retries--
+				continue
 			}
+			if !seen[ex.Text] {
+				break
+			}
+			retries--
 		}
+		seen[ex.Text] = true
 		examples = append(examples, ex)
 	}
 
 	for i := 0; i < opts.neg; i++ {
-		examples = append(examples, renderNegativeExample(data, rand))
+		var ex example
+		retries := maxRetries
+		for retries > 0 {
+			ex = renderNegativeExample(data, rand)
+			if !seen[ex.Text] {
+				break
+			}
+			retries--
+		}
+		seen[ex.Text] = true
+		examples = append(examples, ex)
 	}
 
 	genTime := time.Since(startTime)

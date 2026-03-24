@@ -157,13 +157,23 @@ func renderNegativeExample(data *dataSet, rand func() float64) example {
 		text = root
 	}
 
-	// Minor case variation for some negatives
-	if rand() < 0.15 {
+	// Text variation to increase diversity (especially for small dictionaries)
+	v := rand()
+	if v < 0.15 {
+		// Capitalize first letter
 		runes := []rune(text)
 		if len(runes) > 0 {
 			runes[0] = unicode.ToUpper(runes[0])
 			text = string(runes)
 		}
+	} else if v < 0.25 {
+		// Sentence-ending punctuation
+		puncts := []string{".", "!", "?", "..."}
+		text = text + puncts[int(math.Floor(rand()*float64(len(puncts))))]
+	} else if v < 0.35 {
+		// Prefix filler word
+		fillers := []string{"hmm ", "evet ", "well ", "ok ", "so "}
+		text = fillers[int(math.Floor(rand()*float64(len(fillers))))] + text
 	}
 
 	return example{
