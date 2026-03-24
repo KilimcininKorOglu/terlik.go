@@ -27,6 +27,10 @@ func writeJSONL(filePath string, examples []example) error {
 	return w.Flush()
 }
 
+func csvQuote(s string) string {
+	return `"` + strings.ReplaceAll(s, `"`, `""`) + `"`
+}
+
 func writeCSV(filePath string, examples []example) error {
 	f, err := os.Create(filePath)
 	if err != nil {
@@ -37,10 +41,10 @@ func writeCSV(filePath string, examples []example) error {
 	w := bufio.NewWriter(f)
 	w.WriteString("text,label,root,difficulty,transforms,category\n")
 	for _, ex := range examples {
-		escapedText := `"` + strings.ReplaceAll(ex.Text, `"`, `""`) + `"`
 		transforms := strings.Join(ex.Transforms, ";")
 		fmt.Fprintf(w, "%s,%d,%s,%s,%s,%s\n",
-			escapedText, ex.Label, ex.Root, ex.Difficulty, transforms, ex.Category)
+			csvQuote(ex.Text), ex.Label, csvQuote(ex.Root),
+			csvQuote(ex.Difficulty), csvQuote(transforms), csvQuote(ex.Category))
 	}
 	return w.Flush()
 }
