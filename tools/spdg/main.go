@@ -41,13 +41,28 @@ func parseArgs(args []string) *cliOptions {
 			opts.lang = args[i]
 		case arg == "--pos" && i+1 < len(args):
 			i++
-			opts.pos, _ = strconv.Atoi(args[i])
+			val, err := strconv.Atoi(args[i])
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "ERROR: Invalid --pos value: %s\n", args[i])
+				os.Exit(1)
+			}
+			opts.pos = val
 		case arg == "--neg" && i+1 < len(args):
 			i++
-			opts.neg, _ = strconv.Atoi(args[i])
+			val, err := strconv.Atoi(args[i])
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "ERROR: Invalid --neg value: %s\n", args[i])
+				os.Exit(1)
+			}
+			opts.neg = val
 		case arg == "--seed" && i+1 < len(args):
 			i++
-			opts.seed, _ = strconv.Atoi(args[i])
+			val, err := strconv.Atoi(args[i])
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "ERROR: Invalid --seed value: %s\n", args[i])
+				os.Exit(1)
+			}
+			opts.seed = val
 		case arg == "--out" && i+1 < len(args):
 			i++
 			opts.out = args[i]
