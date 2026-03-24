@@ -4,6 +4,7 @@ import (
 	"embed"
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -247,5 +248,6 @@ func GetSupportedLanguages() []string {
 	for k := range registry {
 		keys = append(keys, k)
 	}
+	sort.Strings(keys)
 	return keys
 }
