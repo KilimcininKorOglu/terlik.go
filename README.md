@@ -22,7 +22,7 @@ Ships with **Turkish** (flagship, full coverage), **English**, **Spanish**, and 
 go get github.com/KilimcininKorOglu/terlik.go
 ```
 
-Requires Go 1.22 or later.
+Requires Go 1.25 or later.
 
 ## Quick Start
 
