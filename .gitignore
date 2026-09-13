@@ -6,3 +6,8 @@ output/
 !/.wrongstack/
 /.wrongstack/*
 !/.wrongstack/project.json
+
+# Agent config (global gitignore covers AGENTS.md family; WATCHDOG is local-only)
+WATCHDOG.md
+WATCHDOG.yml
+WATCHDOG.yaml
