@@ -25,6 +25,12 @@ jobs:
       - name: Vet
         run: go vet ./...
 
+      - name: Generate SPDG datasets
+        run: |
+          for lang in tr en es de; do
+            go run ./tools/spdg --$lang --pos 100 --neg 100 --seed 42 > /dev/null
+          done
+
       - name: Test
         run: go test -race -count=1 ./...
 
