@@ -49,10 +49,7 @@ func printStats(examples []example, lang string) {
 
 	fmt.Println("\n  Root Word Distribution (top 10):")
 	sortedRoots := sortedByValue(rootCounts)
-	limit := 10
-	if len(sortedRoots) < limit {
-		limit = len(sortedRoots)
-	}
+	limit := min(len(sortedRoots), 10)
 	for _, kv := range sortedRoots[:limit] {
 		fmt.Printf("    %-18s %6d\n", kv.key, kv.value)
 	}
@@ -65,31 +62,14 @@ func validateExamples(examples []example) int {
 	fmt.Println("\n  VALIDATION RESULTS:")
 	errors := 0
 
-	// Duplicate check
-	texts := make(map[string]bool)
-	duplicates := 0
-	for _, ex := range examples {
-		if texts[ex.Text] {
-			duplicates++
-		}
-		texts[ex.Text] = true
-	}
+	duplicates := countDuplicates(examples)
 	if duplicates > 0 {
 		fmt.Printf("    [WARN] %d duplicate texts found\n", duplicates)
 	} else {
 		fmt.Println("    [OK] No duplicate texts")
 	}
 
-	// Label sanity
-	posCount := 0
-	negCount := 0
-	for _, ex := range examples {
-		if ex.Label == 1 {
-			posCount++
-		} else {
-			negCount++
-		}
-	}
+	posCount, negCount := countLabels(examples)
 	if posCount == 0 || negCount == 0 {
 		fmt.Println("    [ERROR] Single-label dataset")
 		errors++
@@ -105,17 +85,7 @@ func validateExamples(examples []example) int {
 		fmt.Printf("    [OK] Balanced dataset (positive ratio: %.1f%%)\n", ratio*100)
 	}
 
-	// Length check
-	emptyTexts := 0
-	longTexts := 0
-	for _, ex := range examples {
-		if strings.TrimSpace(ex.Text) == "" {
-			emptyTexts++
-		}
-		if len(ex.Text) > 500 {
-			longTexts++
-		}
-	}
+	emptyTexts, longTexts := countLengthIssues(examples)
 	if emptyTexts > 0 {
 		fmt.Printf("    [ERROR] %d empty texts found\n", emptyTexts)
 		errors++
@@ -127,6 +97,44 @@ func validateExamples(examples []example) int {
 	}
 
 	return errors
+}
+
+// countDuplicates returns how many texts appear more than once.
+func countDuplicates(examples []example) int {
+	texts := make(map[string]bool)
+	duplicates := 0
+	for _, ex := range examples {
+		if texts[ex.Text] {
+			duplicates++
+		}
+		texts[ex.Text] = true
+	}
+	return duplicates
+}
+
+// countLabels returns the positive and negative example counts.
+func countLabels(examples []example) (pos, neg int) {
+	for _, ex := range examples {
+		if ex.Label == 1 {
+			pos++
+		} else {
+			neg++
+		}
+	}
+	return pos, neg
+}
+
+// countLengthIssues returns the counts of empty and over-long texts.
+func countLengthIssues(examples []example) (empty, long int) {
+	for _, ex := range examples {
+		if strings.TrimSpace(ex.Text) == "" {
+			empty++
+		}
+		if len(ex.Text) > 500 {
+			long++
+		}
+	}
+	return empty, long
 }
 
 func printSamples(examples []example, rand func() float64) {
@@ -142,11 +150,8 @@ func printSamples(examples []example, rand func() float64) {
 	}
 
 	fmt.Println("\n  --- Positive (toxic) ---")
-	limit := 5
-	if len(positives) < limit {
-		limit = len(positives)
-	}
-	for i := 0; i < limit; i++ {
+	limit := min(len(positives), 5)
+	for range limit {
 		idx := int(math.Floor(rand() * float64(len(positives))))
 		ex := positives[idx]
 		fmt.Printf("    [%s] %q (root: %s, transforms: %s)\n",
@@ -154,11 +159,8 @@ func printSamples(examples []example, rand func() float64) {
 	}
 
 	fmt.Println("\n  --- Negative (clean) ---")
-	limit = 5
-	if len(negatives) < limit {
-		limit = len(negatives)
-	}
-	for i := 0; i < limit; i++ {
+	limit = min(len(negatives), 5)
+	for range limit {
 		idx := int(math.Floor(rand() * float64(len(negatives))))
 		ex := negatives[idx]
 		fmt.Printf("    %q (root: %s)\n", ex.Text, ex.Root)

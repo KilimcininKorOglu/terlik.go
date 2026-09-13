@@ -1,8 +1,8 @@
 package terlik_test
 
 import (
-	"strings"
 	"github.com/KilimcininKorOglu/terlik.go"
+	"strings"
 	"testing"
 )
 
@@ -22,13 +22,8 @@ func TestMergeDictionariesTests(t *testing.T) {
 
 	t.Run("merges entries from extension", func(t *testing.T) {
 		merged := terlik.MergeDictionaries(base, ext)
-		roots := make(map[string]bool)
-		for _, e := range merged.Entries {
-			roots[e.Root] = true
-		}
-		if !roots["kötü"] || !roots["badword"] {
-			t.Error("expected both roots in merged")
-		}
+		assertHasRoot(t, merged.Entries, "kötü")
+		assertHasRoot(t, merged.Entries, "badword")
 	})
 	t.Run("skips duplicate roots case-insensitive", func(t *testing.T) {
 		extDup := terlik.DictionaryData{
@@ -63,6 +58,17 @@ func TestMergeDictionariesTests(t *testing.T) {
 			t.Errorf("expected version %d, got %d", base.Version, merged.Version)
 		}
 	})
+}
+
+// assertHasRoot verifies the merged entries contain the given root word.
+func assertHasRoot(t *testing.T, entries []terlik.DictionaryEntry, root string) {
+	t.Helper()
+	for _, e := range entries {
+		if e.Root == root {
+			return
+		}
+	}
+	t.Errorf("expected root %q in merged entries", root)
 }
 
 func TestExtendDictionaryOption(t *testing.T) {

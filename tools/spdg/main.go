@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"time"
 )
@@ -35,74 +36,94 @@ func parseArgs(args []string) *cliOptions {
 
 	for i := 0; i < len(args); i++ {
 		arg := args[i]
-		switch {
-		case arg == "--lang" && i+1 < len(args):
+		next := ""
+		hasNext := i+1 < len(args)
+		if hasNext {
+			next = args[i+1]
+		}
+		if applyValueFlag(opts, arg, next, hasNext) {
 			i++
-			opts.lang = args[i]
-		case arg == "--pos" && i+1 < len(args):
-			i++
-			val, err := strconv.Atoi(args[i])
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "ERROR: Invalid --pos value: %s\n", args[i])
-				os.Exit(1)
-			}
-			opts.pos = val
-		case arg == "--neg" && i+1 < len(args):
-			i++
-			val, err := strconv.Atoi(args[i])
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "ERROR: Invalid --neg value: %s\n", args[i])
-				os.Exit(1)
-			}
-			opts.neg = val
-		case arg == "--seed" && i+1 < len(args):
-			i++
-			val, err := strconv.Atoi(args[i])
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "ERROR: Invalid --seed value: %s\n", args[i])
-				os.Exit(1)
-			}
-			opts.seed = val
-		case arg == "--out" && i+1 < len(args):
-			i++
-			opts.out = args[i]
-		case arg == "--format" && i+1 < len(args):
-			i++
-			opts.format = args[i]
-		case arg == "--difficulty" && i+1 < len(args):
-			i++
-			opts.difficulty = args[i]
-		case arg == "--stats":
-			opts.stats = true
-		case arg == "--validate":
-			opts.validate = true
-		case arg == "--dry-run":
-			opts.dryRun = true
-		default:
-			// Language shortcuts: --tr, --en, --es, --de
-			for _, lang := range supportedLangs {
-				if arg == "--"+lang {
-					opts.lang = lang
-					break
-				}
-			}
+		} else if !applyBoolFlag(opts, arg) {
+			applyLangShortcut(opts, arg)
 		}
 	}
 
+	validateOptions(opts)
+	return opts
+}
+
+// applyValueFlag handles "--flag value" arguments and reports whether it matched.
+// A value flag at the end of the argument list (hasValue=false) falls through to
+// the other handlers, exactly like the original switch did.
+func applyValueFlag(opts *cliOptions, arg, next string, hasValue bool) bool {
+	if !hasValue {
+		return false
+	}
+	switch arg {
+	case "--lang":
+		opts.lang = next
+	case "--pos":
+		opts.pos = requireInt(next, "--pos")
+	case "--neg":
+		opts.neg = requireInt(next, "--neg")
+	case "--seed":
+		opts.seed = requireInt(next, "--seed")
+	case "--out":
+		opts.out = next
+	case "--format":
+		opts.format = next
+	case "--difficulty":
+		opts.difficulty = next
+	default:
+		return false
+	}
+	return true
+}
+
+// applyBoolFlag handles the no-value flags and reports whether it matched.
+func applyBoolFlag(opts *cliOptions, arg string) bool {
+	switch arg {
+	case "--stats":
+		opts.stats = true
+	case "--validate":
+		opts.validate = true
+	case "--dry-run":
+		opts.dryRun = true
+	default:
+		return false
+	}
+	return true
+}
+
+// applyLangShortcut maps "--tr"-style shortcuts onto opts.lang; unknown args stay ignored.
+func applyLangShortcut(opts *cliOptions, arg string) {
+	for _, lang := range supportedLangs {
+		if arg == "--"+lang {
+			opts.lang = lang
+			return
+		}
+	}
+}
+
+// requireInt parses a numeric flag value, exiting with the CLI's usage error on bad input.
+func requireInt(val, flag string) int {
+	n, err := strconv.Atoi(val)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "ERROR: Invalid %s value: %s\n", flag, val)
+		os.Exit(1)
+	}
+	return n
+}
+
+// validateOptions enforces the language and format constraints after parsing.
+func validateOptions(opts *cliOptions) {
 	if opts.lang == "" {
 		fmt.Fprintln(os.Stderr, "ERROR: Language must be specified. Usage: --lang tr or --tr")
 		fmt.Fprintln(os.Stderr, "Supported languages: tr, en, es, de")
 		os.Exit(1)
 	}
 
-	supported := false
-	for _, l := range supportedLangs {
-		if opts.lang == l {
-			supported = true
-			break
-		}
-	}
-	if !supported {
+	if !isSupportedLang(opts.lang) {
 		fmt.Fprintf(os.Stderr, "ERROR: Unsupported language: %s\n", opts.lang)
 		fmt.Fprintln(os.Stderr, "Supported languages: tr, en, es, de")
 		os.Exit(1)
@@ -112,8 +133,10 @@ func parseArgs(args []string) *cliOptions {
 		fmt.Fprintf(os.Stderr, "ERROR: Invalid format: %s. Use jsonl, csv, or both.\n", opts.format)
 		os.Exit(1)
 	}
+}
 
-	return opts
+func isSupportedLang(lang string) bool {
+	return slices.Contains(supportedLangs, lang)
 }
 
 func main() {
@@ -121,21 +144,39 @@ func main() {
 	rand := mulberry32(opts.seed)
 	lang := langConfigs[opts.lang]
 
-	fmt.Println()
-	fmt.Println("  Synthetic Profanity Dataset Generator")
-	fmt.Printf("  Language: %s (%s)\n", lang.name, opts.lang)
-	fmt.Printf("  Positive: %d, Negative: %d\n", opts.pos, opts.neg)
-	fmt.Printf("  Seed: %d, Format: %s\n", opts.seed, opts.format)
-	fmt.Printf("  Difficulty: %s\n", opts.difficulty)
+	printBanner(opts, lang)
 
-	// Load data
 	fmt.Println("\n  Loading data files...")
 	data, err := loadAllData(opts.lang)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
 		os.Exit(1)
 	}
+	printDataSummary(data)
 
+	if opts.dryRun {
+		runDryRun(opts, data, lang, rand)
+		return
+	}
+
+	examples := generateExamples(opts, data, lang, rand)
+	shuffle(examples, rand)
+	writeOutputs(opts, examples)
+	finishReport(opts, examples, rand)
+}
+
+// printBanner writes the startup banner exactly as the original main did.
+func printBanner(opts *cliOptions, lang *langConfig) {
+	fmt.Println()
+	fmt.Println("  Synthetic Profanity Dataset Generator")
+	fmt.Printf("  Language: %s (%s)\n", lang.name, opts.lang)
+	fmt.Printf("  Positive: %d, Negative: %d\n", opts.pos, opts.neg)
+	fmt.Printf("  Seed: %d, Format: %s\n", opts.seed, opts.format)
+	fmt.Printf("  Difficulty: %s\n", opts.difficulty)
+}
+
+// printDataSummary reports the loaded dataset sizes.
+func printDataSummary(data *dataSet) {
 	fmt.Println("  Loading complete:")
 	fmt.Printf("    Positive roots:     %d\n", len(data.rootsPositive))
 	fmt.Printf("    Negative roots:     %d\n", len(data.rootsNegative))
@@ -150,30 +191,42 @@ func main() {
 	fmt.Printf("    Unicode map:        %d chars\n", len(data.unicodeMap))
 	fmt.Printf("    Zalgo chars:        %d\n", len(data.zalgoChars))
 	fmt.Printf("    ZWC chars:          %d\n", len(data.zwcChars))
+}
 
-	if opts.dryRun {
-		fmt.Println("\n  [DRY-RUN] Data files loaded successfully. No generation performed.")
-		if opts.stats {
-			var sampleExamples []example
-			for i := 0; i < 50; i++ {
-				sampleExamples = append(sampleExamples, renderPositiveExample(data, lang, rand))
-			}
-			for i := 0; i < 50; i++ {
-				sampleExamples = append(sampleExamples, renderNegativeExample(data, rand))
-			}
-			printStats(sampleExamples, opts.lang)
-			printSamples(sampleExamples, rand)
+// runDryRun renders optional stats from a small sample without writing output.
+func runDryRun(opts *cliOptions, data *dataSet, lang *langConfig, rand func() float64) {
+	fmt.Println("\n  [DRY-RUN] Data files loaded successfully. No generation performed.")
+	if opts.stats {
+		var sampleExamples []example
+		for range 50 {
+			sampleExamples = append(sampleExamples, renderPositiveExample(data, lang, rand))
 		}
-		return
+		for range 50 {
+			sampleExamples = append(sampleExamples, renderNegativeExample(data, rand))
+		}
+		printStats(sampleExamples, opts.lang)
+		printSamples(sampleExamples, rand)
 	}
+}
 
-	// Generate examples with deduplication
+// generateExamples renders the requested positive and negative examples with
+// cross-set deduplication, preserving the original PRNG call order.
+func generateExamples(opts *cliOptions, data *dataSet, lang *langConfig, rand func() float64) []example {
 	fmt.Println("\n  Generating examples...")
 	startTime := time.Now()
-	var examples []example
 	seen := make(map[string]bool)
-	maxRetries := 50
+	examples := generatePositives(opts, data, lang, rand, seen)
+	examples = append(examples, generateNegatives(opts, data, rand, seen)...)
+	genTime := time.Since(startTime)
+	fmt.Printf("  %d examples generated (%s)\n", len(examples), genTime.Round(time.Millisecond))
+	return examples
+}
 
+// generatePositives renders opts.pos positive examples, re-rendering entries that
+// miss the requested difficulty or duplicate an already generated text.
+func generatePositives(opts *cliOptions, data *dataSet, lang *langConfig, rand func() float64, seen map[string]bool) []example {
+	maxRetries := 50
+	var examples []example
 	for i := 0; i < opts.pos; i++ {
 		var ex example
 		found := false
@@ -195,7 +248,13 @@ func main() {
 			examples = append(examples, ex)
 		}
 	}
+	return examples
+}
 
+// generateNegatives renders opts.neg negative examples with dedup retries.
+func generateNegatives(opts *cliOptions, data *dataSet, rand func() float64, seen map[string]bool) []example {
+	maxRetries := 50
+	var examples []example
 	for i := 0; i < opts.neg; i++ {
 		var ex example
 		found := false
@@ -213,15 +272,12 @@ func main() {
 			examples = append(examples, ex)
 		}
 	}
+	return examples
+}
 
-	genTime := time.Since(startTime)
-	fmt.Printf("  %d examples generated (%s)\n", len(examples), genTime.Round(time.Millisecond))
-
-	// Shuffle
-	shuffle(examples, rand)
-
-	// Write output
-	if err := os.MkdirAll(opts.out, 0o755); err != nil {
+// writeOutputs creates the output directory and writes the selected formats.
+func writeOutputs(opts *cliOptions, examples []example) {
+	if err := os.MkdirAll(opts.out, 0o750); err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: Cannot create output directory: %v\n", err)
 		os.Exit(1)
 	}
@@ -245,13 +301,14 @@ func main() {
 	}
 
 	fmt.Println("  Write complete.")
+}
 
-	// Stats
+// finishReport prints post-write stats, validation results, and samples.
+func finishReport(opts *cliOptions, examples []example, rand func() float64) {
 	if opts.stats {
 		printStats(examples, opts.lang)
 	}
 
-	// Validation
 	if opts.validate {
 		errs := validateExamples(examples)
 		if errs > 0 {
@@ -261,7 +318,6 @@ func main() {
 		}
 	}
 
-	// Samples
 	printSamples(examples, rand)
 
 	fmt.Println("\n  Done.")

@@ -10,11 +10,11 @@ import (
 )
 
 const (
-	wordCharRange      = `a-zA-Z0-9\x{00C0}-\x{024F}`
-	separator          = `[^` + wordCharRange + `]{0,3}`
-	boundaryBefore     = `(?:^|[^` + wordCharRange + `])`
-	boundaryAfter      = `(?:[^` + wordCharRange + `]|$)`
-	maxPatternLength   = 20000
+	wordCharRange    = `a-zA-Z0-9\x{00C0}-\x{024F}`
+	separator        = `[^` + wordCharRange + `]{0,3}`
+	boundaryBefore   = `(?:^|[^` + wordCharRange + `])`
+	boundaryAfter    = `(?:[^` + wordCharRange + `]|$)`
+	maxPatternLength = 20000
 	maxSuffixChain   = 2
 	regexTimeoutMs   = 250
 )
@@ -82,6 +82,128 @@ func buildSuffixGroup(suffixes []string) string {
 	return fmt.Sprintf("(?:%s(?:%s))", separator, strings.Join(suffixPatterns, "|"))
 }
 
+// sortedEntryRoots returns dictionary keys sorted for deterministic pattern
+// order (Go maps have random iteration).
+func sortedEntryRoots(entries map[string]WordEntry) []string {
+	sortedRoots := make([]string, 0, len(entries))
+	for key := range entries {
+		sortedRoots = append(sortedRoots, key)
+	}
+	sort.Strings(sortedRoots)
+	return sortedRoots
+}
+
+// normalizedForms normalizes root + variants, drops empty and duplicate forms,
+// and sorts longest-first so the regex prefers the longest alternative.
+func normalizedForms(entry WordEntry, normalizeFn func(string) string) []string {
+	allForms := make([]string, 0, 1+len(entry.Variants))
+	allForms = append(allForms, entry.Root)
+	allForms = append(allForms, entry.Variants...)
+
+	// Normalize, deduplicate, sort by length descending
+	seen := make(map[string]bool)
+	var sortedForms []string
+	for _, w := range allForms {
+		n := normalizeFn(w)
+		if n == "" || seen[n] {
+			continue
+		}
+		seen[n] = true
+		sortedForms = append(sortedForms, n)
+	}
+	sort.Slice(sortedForms, func(i, j int) bool {
+		return utf8.RuneCountInString(sortedForms[i]) > utf8.RuneCountInString(sortedForms[j])
+	})
+	return sortedForms
+}
+
+// joinFormPatterns renders every form as a single regex alternative chain.
+func joinFormPatterns(sortedForms []string, charClasses map[string]string, normalizeFn func(string) string) string {
+	formPatterns := make([]string, len(sortedForms))
+	for i, w := range sortedForms {
+		formPatterns[i] = wordToPattern(w, charClasses, normalizeFn)
+	}
+	return strings.Join(formPatterns, "|")
+}
+
+// plainPattern wraps the plain form alternatives in a case-insensitive group.
+func plainPattern(sortedForms []string, charClasses map[string]string, normalizeFn func(string) string) string {
+	return fmt.Sprintf("(?i)(?:%s)", joinFormPatterns(sortedForms, charClasses, normalizeFn))
+}
+
+// entryPattern assembles one entry's inner regex body before boundary
+// wrapping: suffixable entries get the suffix chain on every form,
+// non-suffixable entries a strict/optional-suffix split by form length,
+// and without a suffix group the plain alternatives remain.
+func entryPattern(sortedForms []string, suffixGroup string, useSuffix bool, charClasses map[string]string, normalizeFn func(string) string) string {
+	if useSuffix {
+		// All forms get suffix chain
+		return fmt.Sprintf("(?i)(?:%s)%s{0,%d}",
+			joinFormPatterns(sortedForms, charClasses, normalizeFn), suffixGroup, maxSuffixChain)
+	}
+	if suffixGroup != "" {
+		return mixedBoundaryPattern(sortedForms, suffixGroup, charClasses, normalizeFn)
+	}
+	// No suffix group: just the forms
+	return plainPattern(sortedForms, charClasses, normalizeFn)
+}
+
+// mixedBoundaryPattern handles non-suffixable entries when a suffix group
+// exists: short forms (<4 runes) keep a strict boundary, longer forms get an
+// optional suffix chain.
+func mixedBoundaryPattern(sortedForms []string, suffixGroup string, charClasses map[string]string, normalizeFn func(string) string) string {
+	minVariantSuffixLen := 4
+	var strictForms, suffixableForms []string
+	for _, w := range sortedForms {
+		if utf8.RuneCountInString(w) >= minVariantSuffixLen {
+			suffixableForms = append(suffixableForms, wordToPattern(w, charClasses, normalizeFn))
+		} else {
+			strictForms = append(strictForms, wordToPattern(w, charClasses, normalizeFn))
+		}
+	}
+	var parts []string
+	if len(suffixableForms) > 0 {
+		parts = append(parts, fmt.Sprintf("(?:%s)%s{0,%d}",
+			strings.Join(suffixableForms, "|"), suffixGroup, maxSuffixChain))
+	}
+	if len(strictForms) > 0 {
+		parts = append(parts, fmt.Sprintf("(?:%s)", strings.Join(strictForms, "|")))
+	}
+	return fmt.Sprintf("(?i)(?:%s)", strings.Join(parts, "|"))
+}
+
+// compileEntryRegex wraps the inner pattern with boundary assertions via a
+// capturing group and compiles it. A suffixed pattern that fails to compile
+// falls back to the plain, suffix-free pattern; nil means the entry is
+// skipped (both failures are logged).
+func compileEntryRegex(root string, pattern string, useSuffix bool, sortedForms []string, charClasses map[string]string, normalizeFn func(string) string) *regexp.Regexp {
+	// Wrap with boundary assertions using capturing group.
+	// The boundary chars are consumed by the regex but the capturing group
+	// extracts only the inner match. This replaces JS lookbehind/lookahead
+	// and correctly prevents suffix groups from extending into the next word.
+	wrappedPattern := fmt.Sprintf("%s(%s)%s", boundaryBefore, pattern, boundaryAfter)
+
+	re, err := regexp.Compile(wrappedPattern)
+	if err == nil {
+		return re
+	}
+
+	// Fallback: try without suffix
+	if !useSuffix {
+		log.Printf("[terlik] Pattern for %q failed, skipping: %v", root, err)
+		return nil
+	}
+	fallbackInner := plainPattern(sortedForms, charClasses, normalizeFn)
+	fallbackPattern := fmt.Sprintf("%s(%s)%s", boundaryBefore, fallbackInner, boundaryAfter)
+	re2, err2 := regexp.Compile(fallbackPattern)
+	if err2 != nil {
+		log.Printf("[terlik] Pattern for %q failed completely, skipping: %v", root, err2)
+		return nil
+	}
+	log.Printf("[terlik] Pattern for %q failed with suffixes, using fallback: %v", root, err)
+	return re2
+}
+
 // compilePatterns compiles dictionary entries into regex patterns for detection.
 // Patterns are compiled WITHOUT lookbehind/lookahead; word boundary checks are
 // performed post-match since Go's RE2 engine doesn't support lookarounds.
@@ -98,117 +220,25 @@ func compilePatterns(
 		suffixGroup = buildSuffixGroup(suffixes)
 	}
 
-	// Sort entries by root for deterministic pattern order (Go maps have random iteration)
-	sortedRoots := make([]string, 0, len(entries))
-	for key := range entries {
-		sortedRoots = append(sortedRoots, key)
-	}
-	sort.Strings(sortedRoots)
-
-	for _, key := range sortedRoots {
+	for _, key := range sortedEntryRoots(entries) {
 		entry := entries[key]
-		allForms := make([]string, 0, 1+len(entry.Variants))
-		allForms = append(allForms, entry.Root)
-		allForms = append(allForms, entry.Variants...)
-
-		// Normalize, deduplicate, sort by length descending
-		seen := make(map[string]bool)
-		var sortedForms []string
-		for _, w := range allForms {
-			n := normalizeFn(w)
-			if n == "" || seen[n] {
-				continue
-			}
-			seen[n] = true
-			sortedForms = append(sortedForms, n)
-		}
-		sort.Slice(sortedForms, func(i, j int) bool {
-			return utf8.RuneCountInString(sortedForms[i]) > utf8.RuneCountInString(sortedForms[j])
-		})
-
+		sortedForms := normalizedForms(entry, normalizeFn)
 		if len(sortedForms) == 0 {
 			continue
 		}
 
 		useSuffix := entry.Suffixable && suffixGroup != ""
 
-		var pattern string
-		if useSuffix {
-			// All forms get suffix chain
-			formPatterns := make([]string, len(sortedForms))
-			for i, w := range sortedForms {
-				formPatterns[i] = wordToPattern(w, charClasses, normalizeFn)
-			}
-			combined := strings.Join(formPatterns, "|")
-			pattern = fmt.Sprintf("(?i)(?:%s)%s{0,%d}", combined, suffixGroup, maxSuffixChain)
-		} else if suffixGroup != "" {
-			// Non-suffixable: short forms (<4 chars) get strict boundary,
-			// longer forms (>=4 chars) get optional suffix chain
-			minVariantSuffixLen := 4
-			var strictForms, suffixableForms []string
-			for _, w := range sortedForms {
-				if utf8.RuneCountInString(w) >= minVariantSuffixLen {
-					suffixableForms = append(suffixableForms, wordToPattern(w, charClasses, normalizeFn))
-				} else {
-					strictForms = append(strictForms, wordToPattern(w, charClasses, normalizeFn))
-				}
-			}
-			var parts []string
-			if len(suffixableForms) > 0 {
-				parts = append(parts, fmt.Sprintf("(?:%s)%s{0,%d}",
-					strings.Join(suffixableForms, "|"), suffixGroup, maxSuffixChain))
-			}
-			if len(strictForms) > 0 {
-				parts = append(parts, fmt.Sprintf("(?:%s)", strings.Join(strictForms, "|")))
-			}
-			pattern = fmt.Sprintf("(?i)(?:%s)", strings.Join(parts, "|"))
-		} else {
-			// No suffix group: just the forms
-			formPatterns := make([]string, len(sortedForms))
-			for i, w := range sortedForms {
-				formPatterns[i] = wordToPattern(w, charClasses, normalizeFn)
-			}
-			combined := strings.Join(formPatterns, "|")
-			pattern = fmt.Sprintf("(?i)(?:%s)", combined)
-		}
+		pattern := entryPattern(sortedForms, suffixGroup, useSuffix, charClasses, normalizeFn)
 
 		// Safety guard: if pattern is too long, fallback to non-suffix version
 		if len(pattern) > maxPatternLength {
-			formPatterns := make([]string, len(sortedForms))
-			for i, w := range sortedForms {
-				formPatterns[i] = wordToPattern(w, charClasses, normalizeFn)
-			}
-			combined := strings.Join(formPatterns, "|")
-			pattern = fmt.Sprintf("(?i)(?:%s)", combined)
+			pattern = plainPattern(sortedForms, charClasses, normalizeFn)
 		}
 
-		// Wrap with boundary assertions using capturing group.
-		// The boundary chars are consumed by the regex but the capturing group
-		// extracts only the inner match. This replaces JS lookbehind/lookahead
-		// and correctly prevents suffix groups from extending into the next word.
-		wrappedPattern := fmt.Sprintf("%s(%s)%s", boundaryBefore, pattern, boundaryAfter)
-
-		re, err := regexp.Compile(wrappedPattern)
-		if err != nil {
-			// Fallback: try without suffix
-			if useSuffix {
-				formPatterns := make([]string, len(sortedForms))
-				for i, w := range sortedForms {
-					formPatterns[i] = wordToPattern(w, charClasses, normalizeFn)
-				}
-				fallbackInner := fmt.Sprintf("(?i)(?:%s)", strings.Join(formPatterns, "|"))
-				fallbackPattern := fmt.Sprintf("%s(%s)%s", boundaryBefore, fallbackInner, boundaryAfter)
-				re2, err2 := regexp.Compile(fallbackPattern)
-				if err2 != nil {
-					log.Printf("[terlik] Pattern for %q failed completely, skipping: %v", entry.Root, err2)
-					continue
-				}
-				log.Printf("[terlik] Pattern for %q failed with suffixes, using fallback: %v", entry.Root, err)
-				re = re2
-			} else {
-				log.Printf("[terlik] Pattern for %q failed, skipping: %v", entry.Root, err)
-				continue
-			}
+		re := compileEntryRegex(entry.Root, pattern, useSuffix, sortedForms, charClasses, normalizeFn)
+		if re == nil {
+			continue
 		}
 
 		patterns = append(patterns, compiledPattern{
@@ -225,7 +255,9 @@ func compilePatterns(
 
 // findMatchesWithBoundaries uses the compiled regex (which includes boundary
 // assertions via capturing groups) to find matches. The regex pattern is:
-//   (?:^|[^WORD_CHAR])(inner_pattern)(?:[^WORD_CHAR]|$)
+//
+//	(?:^|[^WORD_CHAR])(inner_pattern)(?:[^WORD_CHAR]|$)
+//
 // Group 1 captures the actual match without boundary chars.
 // We iterate manually to handle overlapping matches (where boundary chars
 // from one match overlap with the next match's content).

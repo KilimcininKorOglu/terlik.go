@@ -2,6 +2,7 @@ package terlik
 
 import (
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 	"sync"
@@ -48,13 +49,13 @@ func newDetector(
 	cacheKey string,
 ) *detector {
 	d := &detector{
-		dict:                dict,
-		normalizeFn:         normalizeFn,
-		safeNormalizeFn:     safeNormalizeFn,
-		locale:              locale,
-		charClasses:         charClasses,
-		cacheKey:            cacheKey,
-		normalizedWordSet:   make(map[string]bool),
+		dict:                 dict,
+		normalizeFn:          normalizeFn,
+		safeNormalizeFn:      safeNormalizeFn,
+		locale:               locale,
+		charClasses:          charClasses,
+		cacheKey:             cacheKey,
+		normalizedWordSet:    make(map[string]bool),
 		normalizedWordToRoot: make(map[string]string),
 	}
 	d.buildNormalizedLookup()
@@ -188,6 +189,18 @@ func (d *detector) detect(text string, options *DetectOptions) []MatchResult {
 	return d.deduplicateResults(filtered)
 }
 
+// passesStrictness reports whether a match survives the caller's severity
+// floor and category exclusions.
+func passesStrictness(r MatchResult, minSev Severity, exCats []Category) bool {
+	if minSev != "" && SeverityOrder[r.Severity] < SeverityOrder[minSev] {
+		return false
+	}
+	if len(exCats) > 0 && r.Category != "" && slices.Contains(exCats, r.Category) {
+		return false
+	}
+	return true
+}
+
 func (d *detector) applyStrictnessFilters(results []MatchResult, options *DetectOptions) []MatchResult {
 	if options == nil {
 		return results
@@ -201,22 +214,9 @@ func (d *detector) applyStrictnessFilters(results []MatchResult, options *Detect
 
 	var filtered []MatchResult
 	for _, r := range results {
-		if minSev != "" && SeverityOrder[r.Severity] < SeverityOrder[minSev] {
-			continue
+		if passesStrictness(r, minSev, exCats) {
+			filtered = append(filtered, r)
 		}
-		if len(exCats) > 0 && r.Category != "" {
-			excluded := false
-			for _, c := range exCats {
-				if r.Category == c {
-					excluded = true
-					break
-				}
-			}
-			if excluded {
-				continue
-			}
-		}
-		filtered = append(filtered, r)
 	}
 	return filtered
 }
@@ -231,7 +231,7 @@ func (d *detector) detectStrict(text string, whitelist map[string]bool, results 
 	wordToRoot := d.normalizedWordToRoot
 	d.mu.RUnlock()
 
-	for wi := 0; wi < len(origWords); wi++ {
+	for wi := range origWords {
 		origWord := origWords[wi]
 		normWord := ""
 		if wi < len(words) {
@@ -302,10 +302,18 @@ func fieldPositions(text string) ([]string, []int) {
 	return words, positions
 }
 
+// whitespaceRunes lists every rune treated as a word separator, sorted
+// ascending so membership is a deterministic binary search.
+var whitespaceRunes = []rune{
+	'\t', '\n', '\v', '\f', '\r', ' ',
+	0x00A0, 0x1680,
+	0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008, 0x2009, 0x200A,
+	0x2028, 0x2029, 0x202F, 0x205F, 0x3000,
+}
+
 func isWhitespaceRune(r rune) bool {
-	return r == ' ' || r == '\t' || r == '\n' || r == '\r' || r == '\f' || r == '\v' ||
-		r == 0x00A0 || r == 0x1680 || (r >= 0x2000 && r <= 0x200A) ||
-		r == 0x2028 || r == 0x2029 || r == 0x202F || r == 0x205F || r == 0x3000
+	_, found := slices.BinarySearch(whitespaceRunes, r)
+	return found
 }
 
 func (d *detector) detectPattern(text string, whitelist map[string]bool, results *[]MatchResult, options *DetectOptions) {
@@ -314,47 +322,74 @@ func (d *detector) detectPattern(text string, whitelist map[string]bool, results
 		activeNormFn = d.safeNormalizeFn
 	}
 
-	// Pass 1: locale-lowered text
+	lowerText, passOneRan := d.runLocaleLoweredPass(text, whitelist, results, options)
+	normalizedText := d.runNormalizedPass(text, lowerText, passOneRan, activeNormFn, whitelist, results, options)
+	d.runCamelCasePass(text, lowerText, normalizedText, activeNormFn, whitelist, results, options)
+}
+
+// runLocaleLoweredPass runs Pass 1 over the locale-lowered text and reports
+// whether it ran. It is skipped when lowering changes the byte length
+// (e.g. Turkish I→ı): match positions would no longer map onto the original.
+func (d *detector) runLocaleLoweredPass(text string, whitelist map[string]bool, results *[]MatchResult, options *DetectOptions) (string, bool) {
 	lowerText := localeLowerCase(text, d.locale)
-	passOneRan := false
 	if lowerText == text {
 		// No case change — positions are identical, no mapping needed
 		d.runPatterns(lowerText, text, whitelist, results, false, options)
-		passOneRan = true
-	} else if len(lowerText) == len(text) {
+		return lowerText, true
+	}
+	if len(lowerText) == len(text) {
 		// Case changed but byte lengths match — safe for normalized mapping
 		d.runPatterns(lowerText, text, whitelist, results, true, options)
-		passOneRan = true
+		return lowerText, true
 	}
-	// else: byte lengths differ (e.g., Turkish I→ı), skip Pass 1.
+	return lowerText, false
+}
 
-	// Pass 2: fully normalized text
-	// Always run if Pass 1 was skipped, or if normalized text differs from lowerText
+// runNormalizedPass runs Pass 2 over the fully normalized text — always when
+// Pass 1 was skipped, otherwise only when normalization produced new text.
+func (d *detector) runNormalizedPass(text string, lowerText string, passOneRan bool, activeNormFn func(string) string, whitelist map[string]bool, results *[]MatchResult, options *DetectOptions) string {
 	normalizedText := activeNormFn(text)
 	if len(normalizedText) > 0 && (!passOneRan || normalizedText != lowerText) {
 		d.runPatterns(normalizedText, text, whitelist, results, true, options)
 	}
+	return normalizedText
+}
 
-	// Pass 3: CamelCase decompounding
-	if options == nil || !boolVal(options.DisableCompound) {
-		decompound := camelCaseRe1.ReplaceAllString(text, "${1} ${2}")
-		decompound = camelCaseRe2.ReplaceAllString(decompound, "${1} ${2}")
-		if decompound != text {
-			decompoundNorm := activeNormFn(decompound)
-			if decompoundNorm != normalizedText && decompoundNorm != lowerText {
-				d.runPatterns(decompoundNorm, text, whitelist, results, true, options)
-			}
-		}
+// runCamelCasePass runs Pass 3 over camelCase-decompounded text, provided
+// compounding is enabled and decompounding yields text no earlier pass covered.
+func (d *detector) runCamelCasePass(text string, lowerText string, normalizedText string, activeNormFn func(string) string, whitelist map[string]bool, results *[]MatchResult, options *DetectOptions) {
+	if options != nil && boolVal(options.DisableCompound) {
+		return
 	}
+	decompound := camelCaseRe1.ReplaceAllString(text, "${1} ${2}")
+	decompound = camelCaseRe2.ReplaceAllString(decompound, "${1} ${2}")
+	if decompound == text {
+		return
+	}
+	decompoundNorm := activeNormFn(decompound)
+	if decompoundNorm == normalizedText || decompoundNorm == lowerText {
+		return
+	}
+	d.runPatterns(decompoundNorm, text, whitelist, results, true, options)
 }
 
 var (
-	camelCaseRe1     = regexp.MustCompile(`([a-z])([A-Z])`)
-	camelCaseRe2     = regexp.MustCompile(`([A-Z]{2,})([a-z])`)
-	endsWithDigitsRe = regexp.MustCompile(`\d+$`)
-	nonDigitDigitsRe = regexp.MustCompile(`^[^\d]+\d+$`)
+	camelCaseRe1      = regexp.MustCompile(`([a-z])([A-Z])`)
+	camelCaseRe2      = regexp.MustCompile(`([A-Z]{2,})([a-z])`)
+	endsWithDigitsRe  = regexp.MustCompile(`\d+$`)
+	nonDigitDigitsRe  = regexp.MustCompile(`^[^\d]+\d+$`)
 	whitespaceSplitRe = regexp.MustCompile(`\s+`)
 )
+
+// buildExistingIndices indexes already-collected results so duplicate byte
+// positions are never reported twice.
+func buildExistingIndices(results []MatchResult) map[int]bool {
+	existingIndices := make(map[int]bool)
+	for _, r := range results {
+		existingIndices[r.Index] = true
+	}
+	return existingIndices
+}
 
 func (d *detector) runPatterns(
 	searchText string,
@@ -364,10 +399,7 @@ func (d *detector) runPatterns(
 	isNormalized bool,
 	options *DetectOptions,
 ) {
-	existingIndices := make(map[int]bool)
-	for _, r := range *results {
-		existingIndices[r.Index] = true
-	}
+	existingIndices := buildExistingIndices(*results)
 
 	patterns := d.ensureCompiled()
 
@@ -386,81 +418,107 @@ func (d *detector) runPatterns(
 		}
 
 		// Skip patterns that will be filtered anyway
-		if minSev != "" && SeverityOrder[pattern.severity] < SeverityOrder[minSev] {
+		if !patternPassesFilters(pattern, minSev, exCats) {
 			continue
 		}
-		if len(exCats) > 0 && pattern.category != "" {
-			excluded := false
-			for _, c := range exCats {
-				if pattern.category == c {
-					excluded = true
-					break
-				}
-			}
-			if excluded {
-				continue
-			}
-		}
 
-		matches := findMatchesWithBoundaries(pattern.regex, searchText)
-
-		for _, m := range matches {
-			matchedText := searchText[m[0]:m[1]]
-			matchIndex := m[0]
-
-			// Whitelist checks
-			if whitelist[matchedText] {
-				continue
-			}
-			normalizedMatch := d.normalizeFn(matchedText)
-			if whitelist[normalizedMatch] {
-				continue
-			}
-
-			surrounding := getSurroundingWord(searchText, matchIndex, len(matchedText))
-			if whitelist[surrounding] {
-				continue
-			}
-			normalizedSurrounding := d.normalizeFn(surrounding)
-			if whitelist[normalizedSurrounding] {
-				continue
-			}
-
-			if isNormalized {
-				mapped := d.mapNormalizedToOriginal(originalText, matchIndex, matchedText)
-				if mapped != nil && whitelist[strings.ToLower(mapped.word)] {
-					continue
-				}
-				// Reject matches where the original word ends with only digits
-				if mapped != nil && endsWithDigitsRe.MatchString(mapped.word) && nonDigitDigitsRe.MatchString(mapped.word) {
-					continue
-				}
-				if mapped != nil && !existingIndices[mapped.index] {
-					*results = append(*results, MatchResult{
-						Word:     mapped.word,
-						Root:     pattern.root,
-						Index:    mapped.index,
-						Severity: pattern.severity,
-						Category: pattern.category,
-						Method:   MethodPattern,
-					})
-					existingIndices[mapped.index] = true
-				}
-			} else {
-				if !existingIndices[matchIndex] {
-					*results = append(*results, MatchResult{
-						Word:     matchedText,
-						Root:     pattern.root,
-						Index:    matchIndex,
-						Severity: pattern.severity,
-						Category: pattern.category,
-						Method:   MethodPattern,
-					})
-					existingIndices[matchIndex] = true
-				}
-			}
+		for _, m := range findMatchesWithBoundaries(pattern.regex, searchText) {
+			d.collectPatternMatch(pattern, searchText, originalText, m, whitelist, isNormalized, existingIndices, results)
 		}
 	}
+}
+
+// patternPassesFilters reports whether a compiled pattern survives the
+// caller's severity floor and category exclusions.
+func patternPassesFilters(pattern compiledPattern, minSev Severity, exCats []Category) bool {
+	if minSev != "" && SeverityOrder[pattern.severity] < SeverityOrder[minSev] {
+		return false
+	}
+	if len(exCats) > 0 && pattern.category != "" && slices.Contains(exCats, pattern.category) {
+		return false
+	}
+	return true
+}
+
+// collectPatternMatch runs the whitelist checks for one regex match and
+// records it — mapped back onto the original text when the search ran over
+// normalized text, at the raw position otherwise.
+func (d *detector) collectPatternMatch(
+	pattern compiledPattern,
+	searchText string,
+	originalText string,
+	m [2]int,
+	whitelist map[string]bool,
+	isNormalized bool,
+	existingIndices map[int]bool,
+	results *[]MatchResult,
+) {
+	matchedText := searchText[m[0]:m[1]]
+	if d.isWhitelistedMatch(searchText, matchedText, m[0], whitelist) {
+		return
+	}
+
+	if isNormalized {
+		d.collectMappedMatch(pattern, originalText, matchedText, m[0], whitelist, existingIndices, results)
+		return
+	}
+
+	if existingIndices[m[0]] {
+		return
+	}
+	*results = append(*results, MatchResult{
+		Word:     matchedText,
+		Root:     pattern.root,
+		Index:    m[0],
+		Severity: pattern.severity,
+		Category: pattern.category,
+		Method:   MethodPattern,
+	})
+	existingIndices[m[0]] = true
+}
+
+// isWhitelistedMatch reports whether the matched text or its surrounding word
+// (raw or normalized) is whitelisted.
+func (d *detector) isWhitelistedMatch(searchText string, matchedText string, matchIndex int, whitelist map[string]bool) bool {
+	if whitelist[matchedText] || whitelist[d.normalizeFn(matchedText)] {
+		return true
+	}
+	surrounding := getSurroundingWord(searchText, matchIndex, len(matchedText))
+	return whitelist[surrounding] || whitelist[d.normalizeFn(surrounding)]
+}
+
+// collectMappedMatch maps a match on normalized text back to the original
+// word and records it, dropping matches whose original word is whitelisted
+// or is a bare digit token.
+func (d *detector) collectMappedMatch(
+	pattern compiledPattern,
+	originalText string,
+	matchedText string,
+	matchIndex int,
+	whitelist map[string]bool,
+	existingIndices map[int]bool,
+	results *[]MatchResult,
+) {
+	mapped := d.mapNormalizedToOriginal(originalText, matchIndex, matchedText)
+	if mapped == nil || whitelist[strings.ToLower(mapped.word)] {
+		return
+	}
+	// Reject matches where the original word ends with only digits
+	if endsWithDigitsRe.MatchString(mapped.word) && nonDigitDigitsRe.MatchString(mapped.word) {
+		return
+	}
+	if existingIndices[mapped.index] {
+		return
+	}
+	*results = append(*results, MatchResult{
+		Word:     mapped.word,
+		Root:     pattern.root,
+		Index:    mapped.index,
+		Severity: pattern.severity,
+		Category: pattern.category,
+		Method:   MethodPattern,
+	})
+	existingIndices[mapped.index] = true
 }
 
 type mappedWord struct {
@@ -531,19 +589,15 @@ func (d *detector) detectFuzzy(
 	wordToRoot := d.normalizedWordToRoot
 	d.mu.RUnlock()
 
-	existingIndices := make(map[int]bool)
-	for _, r := range *results {
-		existingIndices[r.Index] = true
-	}
+	existingIndices := buildExistingIndices(*results)
 
 	startTime := time.Now()
 
-	for wi := 0; wi < len(origWords); wi++ {
+	for wi := range origWords {
 		if time.Since(startTime).Milliseconds() > regexTimeoutMs {
 			break
 		}
 
-		origWord := origWords[wi]
 		word := ""
 		if wi < len(normWords) {
 			word = normWords[wi]
@@ -558,31 +612,45 @@ func (d *detector) detectFuzzy(
 			byteIndex = origPositions[wi]
 		}
 
-		for _, normDict := range wordSlice {
-			if utf8.RuneCountInString(normDict) < 3 {
-				continue
-			}
+		d.matchFuzzyWord(origWords[wi], word, byteIndex, wordSlice, wordToRoot, matcher, threshold, existingIndices, results)
+	}
+}
 
-			similarity := matcher(word, normDict)
-			if similarity >= threshold {
-				if !existingIndices[byteIndex] {
-					dictWord := wordToRoot[normDict]
-					entry := d.dict.findRootForWord(dictWord)
-					if entry != nil {
-						*results = append(*results, MatchResult{
-							Word:     origWord,
-							Root:     entry.Root,
-							Index:    byteIndex,
-							Severity: entry.Severity,
-							Category: Category(entry.Category),
-							Method:   MethodFuzzy,
-						})
-						existingIndices[byteIndex] = true
-					}
-				}
-				break
+// matchFuzzyWord compares word against every dictionary entry of at least
+// three runes and records the first hit at or above threshold.
+func (d *detector) matchFuzzyWord(
+	origWord string,
+	word string,
+	byteIndex int,
+	normDicts []string,
+	wordToRoot map[string]string,
+	matcher FuzzyMatchFn,
+	threshold float64,
+	existingIndices map[int]bool,
+	results *[]MatchResult,
+) {
+	for _, normDict := range normDicts {
+		if utf8.RuneCountInString(normDict) < 3 {
+			continue
+		}
+		if matcher(word, normDict) < threshold {
+			continue
+		}
+		if !existingIndices[byteIndex] {
+			entry := d.dict.findRootForWord(wordToRoot[normDict])
+			if entry != nil {
+				*results = append(*results, MatchResult{
+					Word:     origWord,
+					Root:     entry.Root,
+					Index:    byteIndex,
+					Severity: entry.Severity,
+					Category: Category(entry.Category),
+					Method:   MethodFuzzy,
+				})
+				existingIndices[byteIndex] = true
 			}
 		}
+		break
 	}
 }
 

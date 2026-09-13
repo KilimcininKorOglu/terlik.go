@@ -158,44 +158,49 @@ func expandNumbers(text string, expansions [][2]string) string {
 	var b strings.Builder
 	b.Grow(len(text) + 32)
 	i := 0
-
 	for i < n {
-		matched := false
 		if i > 0 && isExtendedLetter(runes[i-1]) {
 			// Try each expansion (longest first — expansions are already ordered by length desc)
-			for _, exp := range expansions {
-				numRunes := []rune(exp[0])
-				numLen := len(numRunes)
-				if i+numLen > n {
-					continue
-				}
-				// Check if number string matches at position i
-				match := true
-				for k := 0; k < numLen; k++ {
-					if runes[i+k] != numRunes[k] {
-						match = false
-						break
-					}
-				}
-				if !match {
-					continue
-				}
-				// Check if followed by a letter
-				if i+numLen < n && isExtendedLetter(runes[i+numLen]) {
-					b.WriteString(exp[1])
-					i += numLen
-					matched = true
-					break
-				}
+			if word, width, ok := tryExpandAt(runes, i, expansions); ok {
+				b.WriteString(word)
+				i += width
+				continue
 			}
 		}
-		if !matched {
-			b.WriteRune(runes[i])
-			i++
-		}
+		b.WriteRune(runes[i])
+		i++
 	}
 
 	return b.String()
+}
+
+// tryExpandAt finds the first expansion whose number string matches at position i
+// and is followed by a letter, returning its word form and rune width.
+func tryExpandAt(runes []rune, i int, expansions [][2]string) (string, int, bool) {
+	for _, exp := range expansions {
+		numRunes := []rune(exp[0])
+		if !matchNumberAt(runes, i, numRunes) {
+			continue
+		}
+		// Check if followed by a letter
+		if i+len(numRunes) < len(runes) && isExtendedLetter(runes[i+len(numRunes)]) {
+			return exp[1], len(numRunes), true
+		}
+	}
+	return "", 0, false
+}
+
+// matchNumberAt reports whether num matches runes starting at position i.
+func matchNumberAt(runes []rune, i int, num []rune) bool {
+	if i+len(num) > len(runes) {
+		return false
+	}
+	for k, r := range num {
+		if runes[i+k] != r {
+			return false
+		}
+	}
+	return true
 }
 
 // removePunctuationBetweenLetters strips punctuation when surrounded by letters (stage 9).
@@ -210,30 +215,37 @@ func removePunctuationBetweenLetters(text string) string {
 	var b strings.Builder
 	b.Grow(len(text))
 	i := 0
-
 	for i < n {
-		if punctuationChars[runes[i]] {
-			// Collect the punctuation run
-			start := i
-			for i < n && punctuationChars[runes[i]] {
-				i++
-			}
-			// Check if preceded by a letter and followed by a letter
-			if start > 0 && isExtendedLetter(runes[start-1]) && i < n && isExtendedLetter(runes[i]) {
-				// Skip punctuation (don't write it)
-				continue
-			}
-			// Keep the punctuation
-			for k := start; k < i; k++ {
-				b.WriteRune(runes[k])
-			}
-		} else {
+		if !punctuationChars[runes[i]] {
 			b.WriteRune(runes[i])
 			i++
+			continue
+		}
+		start := i
+		i = punctuationRun(runes, i)
+		if isPunctuationBetweenLetters(runes, start, i) {
+			continue // Drop the punctuation run
+		}
+		for k := start; k < i; k++ {
+			b.WriteRune(runes[k])
 		}
 	}
 
 	return b.String()
+}
+
+// punctuationRun returns the end index (exclusive) of the punctuation run starting at i.
+func punctuationRun(runes []rune, i int) int {
+	for i < len(runes) && punctuationChars[runes[i]] {
+		i++
+	}
+	return i
+}
+
+// isPunctuationBetweenLetters reports whether the run runes[start:end] sits between
+// two extended letters and should be dropped.
+func isPunctuationBetweenLetters(runes []rune, start, end int) bool {
+	return start > 0 && isExtendedLetter(runes[start-1]) && end < len(runes) && isExtendedLetter(runes[end])
 }
 
 // collapseRepeats reduces 3+ consecutive identical characters to 1 (stage 10).

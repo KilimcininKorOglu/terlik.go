@@ -3,6 +3,7 @@ package terlik
 import (
 	"fmt"
 	"regexp"
+	"slices"
 	"strings"
 )
 
@@ -13,13 +14,24 @@ var (
 	suffixPattern   = regexp.MustCompile(`^\p{Ll}{1,10}$`)
 )
 
-func containsStr(slice []string, s string) bool {
-	for _, v := range slice {
-		if v == s {
-			return true
+// rootSet collects lowercased roots for duplicate detection.
+func rootSet(entries []DictionaryEntry) map[string]bool {
+	set := make(map[string]bool)
+	for _, e := range entries {
+		set[strings.ToLower(e.Root)] = true
+	}
+	return set
+}
+
+// appendUnique appends values not already tracked in seen, marking them present.
+func appendUnique(seen map[string]bool, dst, values []string) []string {
+	for _, v := range values {
+		if !seen[v] {
+			dst = append(dst, v)
+			seen[v] = true
 		}
 	}
-	return false
+	return dst
 }
 
 // ValidateDictionary validates raw dictionary data against the expected schema.
@@ -27,23 +39,35 @@ func ValidateDictionary(data *DictionaryData) error {
 	if data == nil {
 		return fmt.Errorf("dictionary data must be a non-null object")
 	}
-
 	if data.Version < 1 {
 		return fmt.Errorf("dictionary version must be a positive number")
 	}
+	if err := validateSuffixes(data.Suffixes); err != nil {
+		return err
+	}
+	if err := validateEntries(data.Entries); err != nil {
+		return err
+	}
+	return validateWhitelist(data.Whitelist)
+}
 
-	if len(data.Suffixes) > maxSuffixes {
+// validateSuffixes checks the suffix count limit and the 1-10 lowercase letters format.
+func validateSuffixes(suffixes []string) error {
+	if len(suffixes) > maxSuffixes {
 		return fmt.Errorf("dictionary suffixes exceed maximum of %d", maxSuffixes)
 	}
-
-	for _, suffix := range data.Suffixes {
+	for _, suffix := range suffixes {
 		if !suffixPattern.MatchString(suffix) {
 			return fmt.Errorf("invalid suffix %q: must be 1-10 lowercase Unicode letters", suffix)
 		}
 	}
+	return nil
+}
 
+// validateEntries checks root presence and uniqueness, severity, and category of each entry.
+func validateEntries(entries []DictionaryEntry) error {
 	seenRoots := make(map[string]bool)
-	for i, entry := range data.Entries {
+	for i, entry := range entries {
 		label := fmt.Sprintf("entries[%d]", i)
 
 		if len(entry.Root) == 0 {
@@ -56,79 +80,58 @@ func ValidateDictionary(data *DictionaryData) error {
 		}
 		seenRoots[rootLower] = true
 
-		if !containsStr(validSeverities, entry.Severity) {
+		if !slices.Contains(validSeverities, entry.Severity) {
 			return fmt.Errorf("%s (root=%q): severity must be one of %s",
 				label, entry.Root, strings.Join(validSeverities, ", "))
 		}
 
-		if !containsStr(validCategories, entry.Category) {
+		if !slices.Contains(validCategories, entry.Category) {
 			return fmt.Errorf("%s (root=%q): category must be one of %s",
 				label, entry.Root, strings.Join(validCategories, ", "))
 		}
 	}
+	return nil
+}
 
-	seenWhitelist := make(map[string]bool)
-	for i, w := range data.Whitelist {
+// validateWhitelist rejects empty and duplicate (case-insensitive) whitelist entries.
+func validateWhitelist(words []string) error {
+	seen := make(map[string]bool)
+	for i, w := range words {
 		if len(w) == 0 {
 			return fmt.Errorf("whitelist[%d]: must not be empty", i)
 		}
 		wLower := strings.ToLower(w)
-		if seenWhitelist[wLower] {
+		if seen[wLower] {
 			return fmt.Errorf("whitelist[%d]: duplicate entry %q", i, w)
 		}
-		seenWhitelist[wLower] = true
+		seen[wLower] = true
 	}
-
 	return nil
 }
 
 // MergeDictionaries merges an extension dictionary into a base dictionary.
 // Duplicate roots in the extension are skipped.
 func MergeDictionaries(base, ext DictionaryData) DictionaryData {
-	existingRoots := make(map[string]bool)
-	for _, e := range base.Entries {
-		existingRoots[strings.ToLower(e.Root)] = true
-	}
-
+	existingRoots := rootSet(base.Entries)
 	mergedEntries := make([]DictionaryEntry, len(base.Entries))
 	copy(mergedEntries, base.Entries)
-
 	for _, entry := range ext.Entries {
-		if !existingRoots[strings.ToLower(entry.Root)] {
+		rootLower := strings.ToLower(entry.Root)
+		if !existingRoots[rootLower] {
 			mergedEntries = append(mergedEntries, entry)
-			existingRoots[strings.ToLower(entry.Root)] = true
+			existingRoots[rootLower] = true
 		}
 	}
 
 	suffixSet := make(map[string]bool)
 	var mergedSuffixes []string
-	for _, s := range base.Suffixes {
-		if !suffixSet[s] {
-			mergedSuffixes = append(mergedSuffixes, s)
-			suffixSet[s] = true
-		}
-	}
-	for _, s := range ext.Suffixes {
-		if !suffixSet[s] {
-			mergedSuffixes = append(mergedSuffixes, s)
-			suffixSet[s] = true
-		}
-	}
+	mergedSuffixes = appendUnique(suffixSet, mergedSuffixes, base.Suffixes)
+	mergedSuffixes = appendUnique(suffixSet, mergedSuffixes, ext.Suffixes)
 
 	wlSet := make(map[string]bool)
 	var mergedWhitelist []string
-	for _, w := range base.Whitelist {
-		if !wlSet[w] {
-			mergedWhitelist = append(mergedWhitelist, w)
-			wlSet[w] = true
-		}
-	}
-	for _, w := range ext.Whitelist {
-		if !wlSet[w] {
-			mergedWhitelist = append(mergedWhitelist, w)
-			wlSet[w] = true
-		}
-	}
+	mergedWhitelist = appendUnique(wlSet, mergedWhitelist, base.Whitelist)
+	mergedWhitelist = appendUnique(wlSet, mergedWhitelist, ext.Whitelist)
 
 	return DictionaryData{
 		Version:   base.Version,

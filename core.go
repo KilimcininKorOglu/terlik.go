@@ -26,92 +26,17 @@ type TerlikCore struct {
 
 // NewTerlikCore creates a new TerlikCore instance with a pre-resolved language config.
 func NewTerlikCore(langConfig LanguageConfig, opts *Options) (*TerlikCore, error) {
-	c := &TerlikCore{
-		language:       langConfig.Locale,
-		mode:           ModeBalanced,
-		maskStyle:      MaskStars,
-		fuzzyAlgorithm: FuzzyLevenshtein,
-		fuzzyThreshold: 0.8,
-		maxLength:      MaxInputLength,
-		replaceMask:    "[***]",
+	c := newCoreOptions(langConfig)
+	if err := c.applyOptions(opts); err != nil {
+		return nil, err
 	}
 
-	if opts != nil {
-		if opts.Mode != "" {
-			c.mode = opts.Mode
-		}
-		if opts.MaskStyle != "" {
-			c.maskStyle = opts.MaskStyle
-		}
-		if opts.FuzzyAlgorithm != "" {
-			c.fuzzyAlgorithm = opts.FuzzyAlgorithm
-		}
-		if opts.ReplaceMask != "" {
-			c.replaceMask = opts.ReplaceMask
-		}
-		c.enableFuzzy = opts.EnableFuzzy
-		c.disableLeetDecode = opts.DisableLeetDecode
-		c.disableCompound = opts.DisableCompound
-		c.minSeverity = opts.MinSeverity
-		c.excludeCategories = opts.ExcludeCategories
-
-		if opts.FuzzyThreshold != 0 {
-			if opts.FuzzyThreshold < 0 || opts.FuzzyThreshold > 1 {
-				return nil, fmt.Errorf("fuzzyThreshold must be between 0 and 1, got %f", opts.FuzzyThreshold)
-			}
-			c.fuzzyThreshold = opts.FuzzyThreshold
-		}
-
-		if opts.MaxLength != 0 {
-			if opts.MaxLength < 1 {
-				return nil, fmt.Errorf("maxLength must be at least 1, got %d", opts.MaxLength)
-			}
-			c.maxLength = opts.MaxLength
-		}
+	dictData, customList, whitelist, err := resolveDictionaryData(langConfig.Dictionary, opts)
+	if err != nil {
+		return nil, err
 	}
-
-	normalizeFn := CreateNormalizer(NormalizerConfig{
-		Locale:          langConfig.Locale,
-		CharMap:         langConfig.CharMap,
-		LeetMap:         langConfig.LeetMap,
-		NumberExpansions: langConfig.NumberExpansions,
-	})
-	safeNormalizeFn := CreateNormalizer(NormalizerConfig{
-		Locale:  langConfig.Locale,
-		CharMap: langConfig.CharMap,
-		LeetMap: map[string]string{},
-	})
-
-	dictData := langConfig.Dictionary
-	if opts != nil && opts.ExtendDictionary != nil {
-		if err := ValidateDictionary(opts.ExtendDictionary); err != nil {
-			return nil, fmt.Errorf("extendDictionary validation failed: %w", err)
-		}
-		dictData = MergeDictionaries(dictData, *opts.ExtendDictionary)
-	}
-
-	var customList, whitelist []string
-	if opts != nil {
-		customList = opts.CustomList
-		whitelist = opts.Whitelist
-	}
-
 	c.dict = newDictionary(dictData, customList, whitelist)
-
-	hasCustomDict := opts != nil && (len(opts.CustomList) > 0 || len(opts.Whitelist) > 0 || opts.ExtendDictionary != nil)
-	cacheKey := langConfig.Locale
-	if hasCustomDict {
-		cacheKey = ""
-	}
-
-	c.det = newDetector(
-		c.dict,
-		normalizeFn,
-		safeNormalizeFn,
-		langConfig.Locale,
-		langConfig.CharClasses,
-		cacheKey,
-	)
+	c.initDetector(langConfig, opts)
 
 	if opts != nil && opts.BackgroundWarmup {
 		go func() {
@@ -121,6 +46,114 @@ func NewTerlikCore(langConfig LanguageConfig, opts *Options) (*TerlikCore, error
 	}
 
 	return c, nil
+}
+
+// newCoreOptions returns a TerlikCore pre-filled with the documented defaults.
+func newCoreOptions(langConfig LanguageConfig) *TerlikCore {
+	return &TerlikCore{
+		language:       langConfig.Locale,
+		mode:           ModeBalanced,
+		maskStyle:      MaskStars,
+		fuzzyAlgorithm: FuzzyLevenshtein,
+		fuzzyThreshold: 0.8,
+		maxLength:      MaxInputLength,
+		replaceMask:    "[***]",
+	}
+}
+
+// applyOptions overrides defaults with user-supplied options and validates limits.
+func (c *TerlikCore) applyOptions(opts *Options) error {
+	if opts == nil {
+		return nil
+	}
+	c.applyOverrides(opts)
+	c.enableFuzzy = opts.EnableFuzzy
+	c.disableLeetDecode = opts.DisableLeetDecode
+	c.disableCompound = opts.DisableCompound
+	c.minSeverity = opts.MinSeverity
+	c.excludeCategories = opts.ExcludeCategories
+	return c.applyLimits(opts)
+}
+
+// applyOverrides replaces non-empty string options.
+func (c *TerlikCore) applyOverrides(opts *Options) {
+	if opts.Mode != "" {
+		c.mode = opts.Mode
+	}
+	if opts.MaskStyle != "" {
+		c.maskStyle = opts.MaskStyle
+	}
+	if opts.FuzzyAlgorithm != "" {
+		c.fuzzyAlgorithm = opts.FuzzyAlgorithm
+	}
+	if opts.ReplaceMask != "" {
+		c.replaceMask = opts.ReplaceMask
+	}
+}
+
+// applyLimits validates and applies numeric options; zero keeps the default.
+func (c *TerlikCore) applyLimits(opts *Options) error {
+	if opts.FuzzyThreshold != 0 {
+		if opts.FuzzyThreshold < 0 || opts.FuzzyThreshold > 1 {
+			return fmt.Errorf("fuzzyThreshold must be between 0 and 1, got %f", opts.FuzzyThreshold)
+		}
+		c.fuzzyThreshold = opts.FuzzyThreshold
+	}
+	if opts.MaxLength != 0 {
+		if opts.MaxLength < 1 {
+			return fmt.Errorf("maxLength must be at least 1, got %d", opts.MaxLength)
+		}
+		c.maxLength = opts.MaxLength
+	}
+	return nil
+}
+
+// resolveDictionaryData validates an extension dictionary, merges it into the base
+// dictionary, and extracts the runtime word lists.
+func resolveDictionaryData(base DictionaryData, opts *Options) (DictionaryData, []string, []string, error) {
+	var customList, whitelist []string
+	if opts == nil {
+		return base, customList, whitelist, nil
+	}
+	if opts.ExtendDictionary != nil {
+		if err := ValidateDictionary(opts.ExtendDictionary); err != nil {
+			return DictionaryData{}, nil, nil, fmt.Errorf("extendDictionary validation failed: %w", err)
+		}
+		base = MergeDictionaries(base, *opts.ExtendDictionary)
+	}
+	return base, opts.CustomList, opts.Whitelist, nil
+}
+
+// initDetector builds the language normalizers and the detector.
+func (c *TerlikCore) initDetector(langConfig LanguageConfig, opts *Options) {
+	normalizeFn := CreateNormalizer(NormalizerConfig{
+		Locale:           langConfig.Locale,
+		CharMap:          langConfig.CharMap,
+		LeetMap:          langConfig.LeetMap,
+		NumberExpansions: langConfig.NumberExpansions,
+	})
+	safeNormalizeFn := CreateNormalizer(NormalizerConfig{
+		Locale:  langConfig.Locale,
+		CharMap: langConfig.CharMap,
+		LeetMap: map[string]string{},
+	})
+	c.det = newDetector(
+		c.dict,
+		normalizeFn,
+		safeNormalizeFn,
+		langConfig.Locale,
+		langConfig.CharClasses,
+		detectorCacheKey(langConfig.Locale, opts),
+	)
+}
+
+// detectorCacheKey returns the pattern-cache key: the locale, or empty when a
+// custom dictionary makes cached patterns unusable.
+func detectorCacheKey(locale string, opts *Options) string {
+	if opts != nil && (len(opts.CustomList) > 0 || len(opts.Whitelist) > 0 || opts.ExtendDictionary != nil) {
+		return ""
+	}
+	return locale
 }
 
 // Language returns the language code this instance was created with.

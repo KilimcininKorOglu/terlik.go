@@ -141,7 +141,7 @@ func transformZalgo(word string, data *dataSet, _ *langConfig, rand func() float
 	for _, ch := range word {
 		b.WriteRune(ch)
 		count := 1 + int(math.Floor(rand()*3))
-		for j := 0; j < count; j++ {
+		for range count {
 			b.WriteString(data.zalgoChars[int(math.Floor(rand()*float64(len(data.zalgoChars))))])
 		}
 	}

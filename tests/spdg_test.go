@@ -47,7 +47,8 @@ func parseJSONL(filePath string) ([]spdgEntry, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+	// Read-only handle; scanner.Err() below already reports any read failure.
+	defer func() { _ = f.Close() }()
 
 	var entries []spdgEntry
 	scanner := bufio.NewScanner(f)
@@ -71,7 +72,6 @@ func TestSPDG(t *testing.T) {
 	outputDir := spdgOutputDir()
 
 	for _, lang := range languages {
-		lang := lang
 		t.Run(strings.ToUpper(lang), func(t *testing.T) {
 			jsonlPath := filepath.Join(outputDir, fmt.Sprintf("export-%s.jsonl", lang))
 			if _, err := os.Stat(jsonlPath); os.IsNotExist(err) {
@@ -86,12 +86,11 @@ func TestSPDG(t *testing.T) {
 
 			instance := mustNew(t, &terlik.Options{Language: lang})
 
-			var positives, negatives []spdgEntry
+			var negatives []spdgEntry
 			byDifficulty := make(map[string][]spdgEntry)
 
 			for _, e := range entries {
 				if e.Label == 1 {
-					positives = append(positives, e)
 					byDifficulty[e.Difficulty] = append(byDifficulty[e.Difficulty], e)
 				} else {
 					negatives = append(negatives, e)
@@ -99,61 +98,75 @@ func TestSPDG(t *testing.T) {
 			}
 
 			t.Run("PositiveDetection", func(t *testing.T) {
-				for difficulty, group := range byDifficulty {
-					detected := 0
-					for _, entry := range group {
-						if instance.ContainsProfanity(entry.Text, nil) {
-							detected++
-						}
-					}
-					rate := float64(detected) / float64(len(group)) * 100
-					threshold := positiveThresholds[difficulty]
-
-					if threshold != nil {
-						t.Logf("[%s] %s: %d/%d (%.1f%%) — min %.0f%%",
-							strings.ToUpper(lang), difficulty, detected, len(group), rate, *threshold)
-						if rate < *threshold {
-							t.Errorf("[%s] %s detection rate %.1f%% < threshold %.0f%%",
-								strings.ToUpper(lang), difficulty, rate, *threshold)
-						}
-					} else {
-						t.Logf("[%s] %s: %d/%d (%.1f%%) — report only",
-							strings.ToUpper(lang), difficulty, detected, len(group), rate)
-					}
-				}
+				checkPositiveDetection(t, instance, lang, byDifficulty)
 			})
 
 			t.Run("NegativeFalsePositive", func(t *testing.T) {
-				if len(negatives) == 0 {
-					t.Skip("No negative examples")
-					return
-				}
-
-				falsePositives := 0
-				var fpExamples []string
-
-				for _, entry := range negatives {
-					if instance.ContainsProfanity(entry.Text, nil) {
-						falsePositives++
-						if len(fpExamples) < 10 {
-							fpExamples = append(fpExamples, fmt.Sprintf("%q (root: %s)", entry.Text, entry.Root))
-						}
-					}
-				}
-
-				fpRate := float64(falsePositives) / float64(len(negatives)) * 100
-				t.Logf("[%s] False positive: %d/%d (%.1f%%)",
-					strings.ToUpper(lang), falsePositives, len(negatives), fpRate)
-
-				if len(fpExamples) > 0 {
-					t.Logf("[%s] FP examples: %s", strings.ToUpper(lang), strings.Join(fpExamples, ", "))
-				}
-
-				if fpRate >= falsePositiveLimit {
-					t.Errorf("[%s] False positive rate %.1f%% >= %.0f%%",
-						strings.ToUpper(lang), fpRate, falsePositiveLimit)
-				}
+				checkNegativeFalsePositives(t, instance, lang, negatives)
 			})
 		})
+	}
+}
+
+// checkPositiveDetection verifies each difficulty group's detection rate against
+// its threshold; difficulties without a threshold are report-only.
+func checkPositiveDetection(t *testing.T, instance *terlik.Terlik, lang string, byDifficulty map[string][]spdgEntry) {
+	t.Helper()
+	for difficulty, group := range byDifficulty {
+		detected := 0
+		for _, entry := range group {
+			if instance.ContainsProfanity(entry.Text, nil) {
+				detected++
+			}
+		}
+		rate := float64(detected) / float64(len(group)) * 100
+		threshold := positiveThresholds[difficulty]
+
+		if threshold != nil {
+			t.Logf("[%s] %s: %d/%d (%.1f%%) — min %.0f%%",
+				strings.ToUpper(lang), difficulty, detected, len(group), rate, *threshold)
+			if rate < *threshold {
+				t.Errorf("[%s] %s detection rate %.1f%% < threshold %.0f%%",
+					strings.ToUpper(lang), difficulty, rate, *threshold)
+			}
+		} else {
+			t.Logf("[%s] %s: %d/%d (%.1f%%) — report only",
+				strings.ToUpper(lang), difficulty, detected, len(group), rate)
+		}
+	}
+}
+
+// checkNegativeFalsePositives verifies clean examples stay undetected within
+// the false-positive budget.
+func checkNegativeFalsePositives(t *testing.T, instance *terlik.Terlik, lang string, negatives []spdgEntry) {
+	t.Helper()
+	if len(negatives) == 0 {
+		t.Skip("No negative examples")
+		return
+	}
+
+	falsePositives := 0
+	var fpExamples []string
+
+	for _, entry := range negatives {
+		if instance.ContainsProfanity(entry.Text, nil) {
+			falsePositives++
+			if len(fpExamples) < 10 {
+				fpExamples = append(fpExamples, fmt.Sprintf("%q (root: %s)", entry.Text, entry.Root))
+			}
+		}
+	}
+
+	fpRate := float64(falsePositives) / float64(len(negatives)) * 100
+	t.Logf("[%s] False positive: %d/%d (%.1f%%)",
+		strings.ToUpper(lang), falsePositives, len(negatives), fpRate)
+
+	if len(fpExamples) > 0 {
+		t.Logf("[%s] FP examples: %s", strings.ToUpper(lang), strings.Join(fpExamples, ", "))
+	}
+
+	if fpRate >= falsePositiveLimit {
+		t.Errorf("[%s] False positive rate %.1f%% >= %.0f%%",
+			strings.ToUpper(lang), fpRate, falsePositiveLimit)
 	}
 }
