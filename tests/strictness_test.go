@@ -169,11 +169,12 @@ func TestModeToggleInteraction(t *testing.T) {
 	})
 	t.Run("per-call toggle overrides constructor", func(t *testing.T) {
 		tr := mustNew(t, &terlik.Options{MinSeverity: terlik.SeverityHigh})
-		if tr.ContainsProfanity("salak", &terlik.DetectOptions{MinSeverity: terlik.SeverityLow}) {
-			// Per-call: allow low → salak should be detected
-			// Actually this sets minSeverity=low, which means allow everything ≥ low
+		// Per-call MinSeverity=low overrides the constructor's high, so "salak"
+		// (low severity) must be detected through this very instance.
+		if !tr.ContainsProfanity("salak", &terlik.DetectOptions{MinSeverity: terlik.SeverityLow}) {
+			t.Error("per-call MinSeverity=low should override constructor high and detect 'salak'")
 		}
-		// With minSeverity=low, salak (low) should be detected
+		// Baseline: an instance constructed with MinSeverity=low detects it too.
 		assertDetects(t, mustNew(t, &terlik.Options{MinSeverity: terlik.SeverityLow}), "salak")
 	})
 }
