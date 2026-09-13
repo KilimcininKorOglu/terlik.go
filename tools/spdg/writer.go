@@ -9,11 +9,13 @@ import (
 )
 
 func writeJSONL(filePath string, examples []example) error {
-	f, err := os.Create(filePath)
+	// Path comes from the operator's --out CLI flag, not untrusted input.
+	f, err := os.Create(filePath) // #nosec G304
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	// Write errors are sticky in bufio.Writer and returned by w.Flush() below.
+	defer func() { _ = f.Close() }()
 
 	w := bufio.NewWriter(f)
 	for _, ex := range examples {
@@ -21,8 +23,8 @@ func writeJSONL(filePath string, examples []example) error {
 		if err != nil {
 			return err
 		}
-		w.Write(data)
-		w.WriteByte('\n')
+		_, _ = w.Write(data)  // error is sticky; surfaced by w.Flush()
+		_ = w.WriteByte('\n') // error is sticky; surfaced by w.Flush()
 	}
 	return w.Flush()
 }
@@ -32,19 +34,21 @@ func csvQuote(s string) string {
 }
 
 func writeCSV(filePath string, examples []example) error {
-	f, err := os.Create(filePath)
+	// Path comes from the operator's --out CLI flag, not untrusted input.
+	f, err := os.Create(filePath) // #nosec G304
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	// Write errors are sticky in bufio.Writer and returned by w.Flush() below.
+	defer func() { _ = f.Close() }()
 
 	w := bufio.NewWriter(f)
-	w.WriteString("text,label,root,difficulty,transforms,category\n")
+	_, _ = w.WriteString("text,label,root,difficulty,transforms,category\n") // error is sticky; surfaced by w.Flush()
 	for _, ex := range examples {
 		transforms := strings.Join(ex.Transforms, ";")
-		fmt.Fprintf(w, "%s,%d,%s,%s,%s,%s\n",
+		_, _ = fmt.Fprintf(w, "%s,%d,%s,%s,%s,%s\n",
 			csvQuote(ex.Text), ex.Label, csvQuote(ex.Root),
-			csvQuote(ex.Difficulty), csvQuote(transforms), csvQuote(ex.Category))
+			csvQuote(ex.Difficulty), csvQuote(transforms), csvQuote(ex.Category)) // error is sticky; surfaced by w.Flush()
 	}
 	return w.Flush()
 }
