@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 	"unicode/utf8"
@@ -266,7 +267,7 @@ func findMatchesWithBoundaries(re *regexp.Regexp, text string) [][2]int {
 	pos := 0
 
 	for pos <= len(text) {
-		loc := re.FindSubmatchIndex([]byte(text[pos:]))
+		loc := re.FindStringSubmatchIndex(text[pos:])
 		if loc == nil {
 			break
 		}
@@ -297,4 +298,72 @@ func findMatchesWithBoundaries(re *regexp.Regexp, text string) [][2]int {
 	}
 
 	return result
+}
+
+// normMapping precomputes the normalized-offset → original-segment table for
+// one original text so each match maps back in O(log n) instead of re-splitting
+// and re-normalizing the whole text per match.
+type normMapping struct {
+	starts []int // normalized byte offset where each kept segment begins
+	lens   []int // normalized byte length of each kept segment
+	words  []string
+	origs  []int // original byte offset of each kept segment
+}
+
+// lookup returns the original word containing the given normalized byte
+// offset. Same semantics as the former linear walk: segments map disjoint
+// normalized ranges, invisible-only segments are skipped.
+func (nm *normMapping) lookup(normIndex int) (string, int, bool) {
+	if nm == nil {
+		return "", 0, false
+	}
+	i, _ := slices.BinarySearch(nm.starts, normIndex+1) // last start <= normIndex
+	if i == 0 {
+		return "", 0, false
+	}
+	i--
+	if normIndex >= nm.starts[i]+nm.lens[i] {
+		return "", 0, false
+	}
+	return nm.words[i], nm.origs[i], true
+}
+
+// buildNormMapping splits and normalizes the original text once, recording
+// the normalized range of every segment that normalizes to non-empty text.
+func (d *detector) buildNormMapping(originalText string) *normMapping {
+	segments := whitespaceSplitRe.Split(originalText, -1)
+	separators := whitespaceSplitRe.FindAllString(originalText, -1)
+
+	nm := &normMapping{}
+	normOffset := 0
+	origOffset := 0
+	for i, segment := range segments {
+		if segment == "" {
+			if i < len(separators) {
+				origOffset += len(separators[i])
+			}
+			continue
+		}
+
+		normWord := d.normalizeFn(segment)
+		if len(normWord) == 0 {
+			origOffset += len(segment)
+			if i < len(separators) {
+				origOffset += len(separators[i])
+			}
+			continue
+		}
+
+		nm.starts = append(nm.starts, normOffset)
+		nm.lens = append(nm.lens, len(normWord))
+		nm.words = append(nm.words, segment)
+		nm.origs = append(nm.origs, origOffset)
+		normOffset += len(normWord)
+		origOffset += len(segment)
+		if i < len(separators) {
+			normOffset++ // normalized whitespace is single space
+			origOffset += len(separators[i])
+		}
+	}
+	return nm
 }
