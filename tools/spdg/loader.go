@@ -25,10 +25,10 @@ type dataSet struct {
 	leetMap           map[string][]string
 	emojiReplacements []string
 
-	separators  []string
-	unicodeMap  map[string][]string
-	zalgoChars  []string
-	zwcChars    []string
+	separators []string
+	unicodeMap map[string][]string
+	zalgoChars []string
+	zwcChars   []string
 }
 
 var unicodeEscapeRe = regexp.MustCompile(`\\u([0-9a-fA-F]{4})`)

@@ -325,7 +325,10 @@ func TestProfanityRemainingRoots(t *testing.T) {
 	tr := mustNew(t, nil)
 
 	// haysiyetsiz, dangalak, ezik, dingil, avanak, manyak, hödük, kepaze, rezil, kalleş, kevaşe, oğlancı
-	simpleRoots := []struct{ root string; cases []struct{ d, i string } }{
+	simpleRoots := []struct {
+		root  string
+		cases []struct{ d, i string }
+	}{
 		{"haysiyetsiz", []struct{ d, i string }{{"plain", "haysiyetsiz"}, {"in sentence", "bu adam haysiyetsiz"}, {"uppercase", "HAYSIYETSIZ"}}},
 		{"dangalak", []struct{ d, i string }{{"plain", "dangalak"}, {"in sentence", "bu dangalak ne yapiyor"}, {"suffix", "dangalaklar"}, {"uppercase", "DANGALAK"}}},
 		{"ezik", []struct{ d, i string }{{"plain", "ezik"}, {"in sentence", "ezik herif"}, {"suffix ezikler", "ezikler"}, {"suffix eziklik", "eziklik"}, {"uppercase", "EZIK"}}},

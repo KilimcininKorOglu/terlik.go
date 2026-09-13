@@ -140,15 +140,15 @@ type LanguageConfig struct {
 	CharMap          map[string]string
 	LeetMap          map[string]string
 	CharClasses      map[string]string
-	NumberExpansions  [][2]string
+	NumberExpansions [][2]string
 	Dictionary       DictionaryData
 }
 
 // NormalizerConfig configures a language-specific normalizer.
 type NormalizerConfig struct {
-	Locale          string
-	CharMap         map[string]string
-	LeetMap         map[string]string
+	Locale           string
+	CharMap          map[string]string
+	LeetMap          map[string]string
 	NumberExpansions [][2]string
 }
 

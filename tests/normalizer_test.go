@@ -1,8 +1,8 @@
 package terlik_test
 
 import (
-	"strings"
 	"github.com/KilimcininKorOglu/terlik.go"
+	"strings"
 	"testing"
 )
 
