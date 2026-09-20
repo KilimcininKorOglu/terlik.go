@@ -19,10 +19,17 @@ on:
   workflow_dispatch:
     inputs:
       max_age_days:
-        # Artifacts only. The cache step selects by ref, never by age.
+        # Artifacts only. The cache step selects by ref, never by age. Leave it
+        # empty to use DEFAULT_MAX_AGE_DAYS below.
         description: 'Delete artifacts older than this many days (0 = delete all)'
         required: false
-        default: '1'
+
+env:
+  # The retention this repository wants, in ONE place. A scheduled run carries no
+  # inputs, so the step below must not fall back to a second literal: raising the
+  # input default alone would leave the daily run on the old value. Raise this to
+  # keep an artifact that somebody downloads by hand days later.
+  DEFAULT_MAX_AGE_DAYS: '1'
 
 permissions:
   # A permissions block sets every scope it does not name to no access, so the
@@ -48,13 +55,17 @@ jobs:
         with:
           script: |
             // An empty input field must NOT read as 0, because 0 deletes every
-            // artifact. Only an explicit number changes the default of 1 day.
+            // artifact. Only an explicit number overrides the repository default.
+            const fallback = Number(process.env.DEFAULT_MAX_AGE_DAYS);
             const raw = context.payload.inputs?.max_age_days;
             const maxAgeDays = raw === undefined || String(raw).trim() === ''
-              ? 1
+              ? fallback
               : Number(raw);
             if (!Number.isFinite(maxAgeDays) || maxAgeDays < 0) {
-              core.setFailed(`max_age_days is not a non-negative number: ${raw}`);
+              core.setFailed(
+                `max age is not a non-negative number: input=${raw} ` +
+                `default=${process.env.DEFAULT_MAX_AGE_DAYS}`
+              );
               return;
             }
             const cutoff = Date.now() - maxAgeDays * 24 * 60 * 60 * 1000;
