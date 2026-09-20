@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2026-09-20
+
+### Added
+- Hot-path benchmarks for detection, cleaning and fuzzy matching
+- MIT LICENSE file and a CI workflow (build, vet, race tests, gofmt, golangci-lint, gocyclo, gosec, govulncheck)
+- Scheduled workflow that deletes leftover run artifacts and the caches of dead branches and closed pull requests
+
+### Changed
+- Detection no longer rescans the text per match and no longer rebuilds the offset mapping for every hit
+- Go floor raised to 1.25.13 and `golang.org/x/text` updated to v0.39.0
+- Cyclomatic complexity reduced below 10 across the package, with modernized idioms
+- SPDG annotates its intentional uint32 wraparound and reports writer errors
+- CI generates the SPDG datasets so `TestSPDG` runs instead of skipping
+- README states the Go 1.25 requirement
+- Source files reformatted with gofmt
+
+### Fixed
+- Per-call `MinSeverity` override assertion in the test suite
+
 ## [1.0.0] - 2026-03-24
 
 ### Added
