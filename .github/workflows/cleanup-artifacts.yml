@@ -25,7 +25,12 @@ on:
         default: '1'
 
 permissions:
+  # A permissions block sets every scope it does not name to no access, so the
+  # cache step needs its two read scopes spelled out: contents for the branch
+  # list, pull-requests for the state of a pull request.
   actions: write
+  contents: read
+  pull-requests: read
 
 # A scheduled run and a manual run can overlap. Two runs deleting the same
 # artifact or cache make each other fail, so let one finish first.
